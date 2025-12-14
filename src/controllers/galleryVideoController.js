@@ -1,29 +1,44 @@
 import GalleryVideo from "../models/GalleryVideoModel.js";
-import cloudinary from "../config/cloudinary.js";
-import fs from "fs";
 
 // ---------------- CREATE ----------------
 export const createGalleryVideo = async (req, res) => {
   try {
-    if (!req.file)
-      return res.status(400).json({ success: false, message: "Video file missing" });
+    console.log("BODY:", req.body); // 🔥 DEBUG LINE
 
-    const upload = await cloudinary.uploader.upload(req.file.path, {
-      resource_type: "video",
-      folder: "gallery_videos",
-    });
+    if (!req.body) {
+      return res.status(400).json({
+        success: false,
+        message: "Request body missing (send RAW JSON, not form-data)",
+      });
+    }
 
-    fs.unlinkSync(req.file.path);
+    const {
+      title,
+      video_link,
+      category,
+      date,
+      location,
+      status,
+      orderBy,
+      createdBy,
+    } = req.body;
+
+    if (!title || !video_link || !category || !date || !location) {
+      return res.status(400).json({
+        success: false,
+        message: "Required fields missing",
+      });
+    }
 
     const video = await GalleryVideo.create({
-      title: req.body.title,
-      category: req.body.category,
-      date: req.body.date,
-      location: req.body.location,
-      status: req.body.status,
-      orderBy: req.body.orderBy,
-      createdBy: req.body.createdBy,
-      video: upload.secure_url,
+      title,
+      video_link,
+      category,
+      date,
+      location,
+      status,
+      orderBy,
+      createdBy,
     });
 
     res.status(201).json({
@@ -32,6 +47,7 @@ export const createGalleryVideo = async (req, res) => {
       video,
     });
   } catch (error) {
+    console.error("CREATE VIDEO ERROR:", error);
     res.status(500).json({ success: false, error: error.message });
   }
 };
@@ -70,27 +86,13 @@ export const updateGalleryVideo = async (req, res) => {
     if (!video)
       return res.status(404).json({ success: false, message: "Not found" });
 
-    let newVideo = video.video;
-
-    // If new video uploaded
-    if (req.file) {
-      const upload = await cloudinary.uploader.upload(req.file.path, {
-        resource_type: "video",
-        folder: "gallery_videos",
-      });
-
-      newVideo = upload.secure_url;
-
-      fs.unlinkSync(req.file.path);
-    }
-
     video.title = req.body.title || video.title;
+    video.video_link = req.body.video_link || video.video_link;
     video.category = req.body.category || video.category;
     video.date = req.body.date || video.date;
     video.location = req.body.location || video.location;
     video.status = req.body.status || video.status;
     video.orderBy = req.body.orderBy || video.orderBy;
-    video.video = newVideo;
 
     const updated = await video.save();
 
@@ -110,13 +112,6 @@ export const deleteGalleryVideo = async (req, res) => {
     const video = await GalleryVideo.findById(req.params.id);
     if (!video)
       return res.status(404).json({ success: false, message: "Not found" });
-
-    const videoURL = video.video;
-    const publicId = videoURL.split("/").pop().split(".")[0];
-
-    await cloudinary.uploader.destroy(`gallery_videos/${publicId}`, {
-      resource_type: "video",
-    });
 
     await video.deleteOne();
 

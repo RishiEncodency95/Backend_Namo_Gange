@@ -4,11 +4,10 @@ const GalleryVideoSchema = new mongoose.Schema(
   {
     title: { type: String, required: true },
 
-    video: { type: String, required: true }, // Cloudinary video URL
+    video_link: { type: String, required: true }, // ✅ YouTube / MP4 URL
 
-    category: { type: String, required: true }, // "event" ya koi category  
+    category: { type: String, required: true },
     date: { type: Date, required: true },
-
     location: { type: String, required: true },
 
     status: {
@@ -18,10 +17,9 @@ const GalleryVideoSchema = new mongoose.Schema(
     },
 
     orderBy: { type: Number, default: 0 },
-
     createdBy: { type: String, default: null },
   },
-  { timestamps: true } // createdAt + updatedAt
+  { timestamps: true }
 );
 
 export default mongoose.model("GalleryVideo", GalleryVideoSchema);

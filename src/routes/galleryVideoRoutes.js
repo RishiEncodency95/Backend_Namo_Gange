@@ -1,5 +1,4 @@
 import express from "express";
-import upload from "../utils/multer.js";
 import {
   createGalleryVideo,
   getAllGalleryVideos,
@@ -10,10 +9,10 @@ import {
 
 const router = express.Router();
 
-router.post("/create", upload.single("video"), createGalleryVideo);
+router.post("/create", createGalleryVideo);
 router.get("/", getAllGalleryVideos);
 router.get("/:id", getGalleryVideoById);
-router.put("/:id", upload.single("video"), updateGalleryVideo);
+router.put("/:id", updateGalleryVideo);
 router.delete("/:id", deleteGalleryVideo);
 
 export default router;

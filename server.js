@@ -10,18 +10,31 @@ import bannerRoutes from "./src/routes/bannerRoutes.js";
 import galleryImageRoutes from "./src/routes/galleryImageRoutes.js";
 import galleryVideoRoutes from "./src/routes/galleryVideoRoutes.js";
 import initiativeRoutes from "./src/routes/initiativeRoutes.js";
-
-// Now env is available
-// console.log("DEBUG CLOUDINARY:", {
-//   NAME: process.env.CLOUDINARY_NAME,
-//   KEY: process.env.CLOUDINARY_API_KEY,
-//   SECRET: process.env.CLOUDINARY_API_SECRET,
-// });
+import categoryImageRoutes from "./src/routes/categoryImageRoutes.js";
 
 const app = express();
 
-app.use(cors());
-app.use(express.json());
+// --- FIXED CORS ----
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://localhost:5173",
+];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
+
+app.use(express.json()); 
+app.use(express.urlencoded({ extended: true })); 
 
 // Connect to MongoDB
 connectDB();
@@ -32,6 +45,9 @@ app.use("/api/v1/banner", bannerRoutes);
 app.use("/api/v1/galleryImage", galleryImageRoutes);
 app.use("/api/v1/gallery-video", galleryVideoRoutes);
 app.use("/api/v1/initiatives", initiativeRoutes);
+app.use("/api/v1/category-image", categoryImageRoutes);
+
+
 app.get("/", (req, res) => res.send("Server Running"));
 
 // Server start
