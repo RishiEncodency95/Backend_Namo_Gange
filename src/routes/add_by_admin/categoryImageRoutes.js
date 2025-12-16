@@ -1,12 +1,12 @@
 import express from "express";
-import upload from "../utils/multer.js";
+import upload from "../../utils/multer.js";
 import {
   createCategoryImage,
   getAllCategoryImages,
   getCategoryImageById,
   updateCategoryImage,
   deleteCategoryImage,
-} from "../controllers/categoryImageController.js";
+} from "../../controllers/add_by_admin/categoryImageController.js";
 
 const router = express.Router();
 

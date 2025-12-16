@@ -1,5 +1,5 @@
-import CategoryImage from "../models/CategoryImageModel.js";
-import cloudinary from "../config/cloudinary.js";
+import CategoryImage from "../../models/add_by_admin/CategoryImageModel.js";
+import cloudinary from "../../config/cloudinary.js";
 import fs from "fs";
 
 // ✅ CREATE

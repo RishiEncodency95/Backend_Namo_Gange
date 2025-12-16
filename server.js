@@ -10,15 +10,15 @@ import bannerRoutes from "./src/routes/bannerRoutes.js";
 import galleryImageRoutes from "./src/routes/galleryImageRoutes.js";
 import galleryVideoRoutes from "./src/routes/galleryVideoRoutes.js";
 import initiativeRoutes from "./src/routes/initiativeRoutes.js";
-import categoryImageRoutes from "./src/routes/categoryImageRoutes.js";
+import categoryImageRoutes from "./src/routes/add_by_admin/categoryImageRoutes.js";
+import categoryVideoRoutes from "./src/routes/add_by_admin/categoryVideoRoutes.js";
+import statusOptionRoutes from "./src/routes/add_by_admin/statusOptionRoutes.js";
+import blogRoutes from "./src/routes/blog/blogRoutes.js";
 
 const app = express();
 
 // --- FIXED CORS ----
-const allowedOrigins = [
-  "http://localhost:3000",
-  "http://localhost:5173",
-];
+const allowedOrigins = ["http://localhost:3000", "http://localhost:5173"];
 
 app.use(
   cors({
@@ -33,8 +33,8 @@ app.use(
   })
 );
 
-app.use(express.json()); 
-app.use(express.urlencoded({ extended: true })); 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Connect to MongoDB
 connectDB();
@@ -46,8 +46,9 @@ app.use("/api/v1/galleryImage", galleryImageRoutes);
 app.use("/api/v1/gallery-video", galleryVideoRoutes);
 app.use("/api/v1/initiatives", initiativeRoutes);
 app.use("/api/v1/category-image", categoryImageRoutes);
-
-
+app.use("/api/v1/category-video", categoryVideoRoutes);
+app.use("/api/v1/status-option", statusOptionRoutes);
+app.use("/api/v1/blog", blogRoutes);
 app.get("/", (req, res) => res.send("Server Running"));
 
 // Server start

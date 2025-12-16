@@ -4,7 +4,7 @@ const GalleryVideoSchema = new mongoose.Schema(
   {
     title: { type: String, required: true },
 
-    video_link: { type: String, required: true }, // ✅ YouTube / MP4 URL
+    video_link: { type: String }, // ✅ YouTube / MP4 URL
 
     category: { type: String, required: true },
     date: { type: Date, required: true },
