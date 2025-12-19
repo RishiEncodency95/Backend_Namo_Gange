@@ -17,7 +17,8 @@ import blogRoutes from "./src/routes/blog/blogRoutes.js";
 
 const app = express();
 
-// --- FIXED CORS ----
+// --- FIXED CORS ---- code
+
 // const allowedOrigins = ["http://localhost:3000", "http://localhost:5173"];
 const allowedOrigins = [
   "https://admin-namo-gange.vercel.app",
