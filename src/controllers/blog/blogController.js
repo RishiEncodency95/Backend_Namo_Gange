@@ -13,6 +13,8 @@ export const createBlog = async (req, res) => {
       meta_description,
       description,
       status,
+      createdBy,
+      updatedBy,
     } = req.body;
 
     if (!req.file) {
@@ -42,6 +44,8 @@ export const createBlog = async (req, res) => {
       meta_description,
       description,
       status,
+      createdBy,
+      updatedBy,
       image: upload.secure_url,
     });
 
@@ -107,6 +111,9 @@ export const updateBlog = async (req, res) => {
     blog.description = req.body.description || blog.description;
     blog.status = req.body.status || blog.status;
     blog.image = imageUrl;
+    blog.createdBy = req.body.createdBy || blog.createdBy;
+    blog.updatedBy = req.body.updatedBy || blog.updatedBy;
+
 
     const updated = await blog.save();
 

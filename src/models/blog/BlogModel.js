@@ -47,6 +47,16 @@ const blogSchema = new mongoose.Schema(
       enum: ["Active", "Inactive"],
       default: "Active",
     },
+
+    createdBy: {
+      type: String,
+      default: null,
+    },
+
+    updatedBy: {
+      type: String,
+      default: null,
+    },
   },
   { timestamps: true } // createdAt, updatedAt
 );

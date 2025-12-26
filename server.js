@@ -14,16 +14,24 @@ import categoryImageRoutes from "./src/routes/add_by_admin/categoryImageRoutes.j
 import categoryVideoRoutes from "./src/routes/add_by_admin/categoryVideoRoutes.js";
 import statusOptionRoutes from "./src/routes/add_by_admin/statusOptionRoutes.js";
 import blogRoutes from "./src/routes/blog/blogRoutes.js";
-
+import memberRoutes from "./src/routes/membership/memberRoutes.js";
+import categoryRoutes from "./src/routes/add_by_admin/categoryRoutes.js";
+import occupationRoutes from "./src/routes/add_by_admin/occupationRoutes.js";
+import designationRoutes from "./src/routes/add_by_admin/designationRoutes.js";
+import departmentRoutes from "./src/routes/add_by_admin/departmentRoutes.js";
+import professionRoutes from "./src/routes/add_by_admin/professionRoutes.js";
+import universityRoutes from "./src/routes/add_by_admin/universityRoutes.js";
+import enquiryRoutes from "./src/routes/add_by_admin/enquiryRoutes.js";
+import dataRoutes from "./src/routes/add_by_admin/dataRoutes.js";
 const app = express();
 
 // --- FIXED CORS ---- code
 
-// const allowedOrigins = ["http://localhost:3000", "http://localhost:5173"];
-const allowedOrigins = [
-  "https://admin-namo-gange.vercel.app",
-  "http://localhost:5173",
-];
+const allowedOrigins = ["http://localhost:3000", "http://localhost:5173"];
+// const allowedOrigins = [
+//   "https://admin-namo-gange.vercel.app",
+//   "http://localhost:5173",
+// ];
 
 app.use(
   cors({
@@ -54,6 +62,15 @@ app.use("/api/v1/category-image", categoryImageRoutes);
 app.use("/api/v1/category-video", categoryVideoRoutes);
 app.use("/api/v1/status-option", statusOptionRoutes);
 app.use("/api/v1/blog", blogRoutes);
+app.use("/api/v1/members", memberRoutes);
+app.use("/api/v1/categories", categoryRoutes);
+app.use("/api/v1/occupations", occupationRoutes);
+app.use("/api/v1/designations", designationRoutes);
+app.use("/api/v1/departments", departmentRoutes);
+app.use("/api/v1/professions", professionRoutes);
+app.use("/api/v1/universities", universityRoutes);
+app.use("/api/v1/enquiries", enquiryRoutes);
+app.use("/api/v1/data", dataRoutes);
 app.get("/", (req, res) => res.send("Server Running"));
 
 // Server start
