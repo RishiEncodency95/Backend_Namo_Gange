@@ -10,17 +10,23 @@ if (!fs.existsSync(uploadDir)) {
   console.log("uploads folder created at:", uploadDir);
 }
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, uploadDir);
-  },
-  filename: function (req, file, cb) {
-    const ext = path.extname(file.originalname);
-    const unique = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, `${unique}${ext}`);
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, uploadDir);
+//   },
+//   filename: function (req, file, cb) {
+//     const ext = path.extname(file.originalname);
+//     const unique = Date.now() + "-" + Math.round(Math.random() * 1e9);
+//     cb(null, `${unique}${ext}`);
+//   },
+// });
+const storage = multer.memoryStorage();
+
+const upload = multer({
+  storage,
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB limit
   },
 });
-
-const upload = multer({ storage });
 
 export default upload;

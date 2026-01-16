@@ -1,15 +1,14 @@
 // LOAD ENV FIRST — MUST BE FIRST LINE
 import dotenv from "dotenv";
 dotenv.config();
-
 import express from "express";
 import cors from "cors";
 import connectDB from "./src/config/db.js";
+import activityLogRoutes from "./src/routes/activity/activityLogRoutes.js";
 import adminRoutes from "./src/routes/adminRoutes.js";
 import bannerRoutes from "./src/routes/bannerRoutes.js";
 import galleryImageRoutes from "./src/routes/galleryImageRoutes.js";
 import galleryVideoRoutes from "./src/routes/galleryVideoRoutes.js";
-import initiativeRoutes from "./src/routes/initiativeRoutes.js";
 import categoryImageRoutes from "./src/routes/add_by_admin/categoryImageRoutes.js";
 import categoryVideoRoutes from "./src/routes/add_by_admin/categoryVideoRoutes.js";
 import statusOptionRoutes from "./src/routes/add_by_admin/statusOptionRoutes.js";
@@ -23,6 +22,12 @@ import professionRoutes from "./src/routes/add_by_admin/professionRoutes.js";
 import universityRoutes from "./src/routes/add_by_admin/universityRoutes.js";
 import enquiryRoutes from "./src/routes/add_by_admin/enquiryRoutes.js";
 import dataRoutes from "./src/routes/add_by_admin/dataRoutes.js";
+import objectiveRoutes from "./src/routes/objective/objectiveRoutes.js";
+import objNameRoutes from "./src/routes/add_by_admin/objNameRoutes.js";
+import initiativeRoutes from "./src/routes/initiative/initiativeRoutes.js";
+import testimonialRoutes from "./src/routes/testimonial/testimonialRoutes.js";
+import achievementRoutes from "./src/routes/achievement/achievementRoutes.js";
+
 const app = express();
 
 // --- FIXED CORS ---- code
@@ -53,11 +58,11 @@ app.use(express.urlencoded({ extended: true }));
 connectDB();
 
 // Routes
+app.use("/api/v1/activity-logs", activityLogRoutes);
 app.use("/api/v1/admin", adminRoutes);
 app.use("/api/v1/banner", bannerRoutes);
 app.use("/api/v1/galleryImage", galleryImageRoutes);
 app.use("/api/v1/gallery-video", galleryVideoRoutes);
-app.use("/api/v1/initiatives", initiativeRoutes);
 app.use("/api/v1/category-image", categoryImageRoutes);
 app.use("/api/v1/category-video", categoryVideoRoutes);
 app.use("/api/v1/status-option", statusOptionRoutes);
@@ -71,6 +76,12 @@ app.use("/api/v1/professions", professionRoutes);
 app.use("/api/v1/universities", universityRoutes);
 app.use("/api/v1/enquiries", enquiryRoutes);
 app.use("/api/v1/data", dataRoutes);
+app.use("/api/v1/objectives", objectiveRoutes);
+app.use("/api/v1/obj-name", objNameRoutes);
+app.use("/api/v1/initiatives", initiativeRoutes);
+app.use("/api/v1/testimonials", testimonialRoutes);
+app.use("/api/v1/achievements", achievementRoutes);
+
 app.get("/", (req, res) => res.send("Server Running"));
 
 // Server start

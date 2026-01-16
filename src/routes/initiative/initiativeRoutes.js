@@ -1,12 +1,12 @@
 import express from "express";
-import upload from "../utils/multer.js";
+import upload from "../../utils/multer.js";
 import {
   createInitiative,
   getAllInitiatives,
   getInitiativeById,
   updateInitiative,
   deleteInitiative,
-} from "../controllers/initiativeController.js";
+} from "../../controllers/initiative/initiativeController.js";
 
 const router = express.Router();
 

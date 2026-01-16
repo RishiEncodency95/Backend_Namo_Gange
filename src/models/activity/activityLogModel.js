@@ -1,0 +1,31 @@
+import mongoose from "mongoose";
+
+const activityLogSchema = new mongoose.Schema(
+  {
+    user_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Admin", // ya User (jo bhi aapka user model ho)
+      required: true,
+    },
+    message: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    link: {
+      type: String,
+      default: "",
+    },
+    section: {
+      type: String,
+      required: true, // e.g. Banner, Blog, Member, Category
+    },
+    timestamp: {
+      type: Date,
+      default: Date.now,
+    },
+  },
+  { timestamps: true } // createdAt, updatedAt auto
+);
+
+export default mongoose.model("ActivityLog", activityLogSchema);
