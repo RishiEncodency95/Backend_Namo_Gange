@@ -4,31 +4,24 @@ import cloudinary from "../../config/cloudinary.js";
 /* helper */
 const uploadToCloudinary = (buffer) =>
   new Promise((resolve, reject) => {
-    cloudinary.uploader.upload_stream(
-      { folder: "objectives" },
-      (err, result) => {
+    cloudinary.uploader
+      .upload_stream({ folder: "objectives" }, (err, result) => {
         if (err) reject(err);
         else resolve(result);
-      }
-    ).end(buffer);
+      })
+      .end(buffer);
   });
 
 /* CREATE */
 export const createObjective = async (req, res) => {
   try {
-    const {
-      title,
-      slug,
-      desc,
-      status,
-      meta_keywords,
-      meta_desc,
-    } = req.body;
+    const { title, slug, desc, status, meta_keywords, meta_desc, created_by } =
+      req.body;
 
-    if (!title || !slug || !desc) {
+    if (!title || !slug || !desc || !created_by) {
       return res.status(400).json({
         success: false,
-        message: "title, slug and desc are required",
+        message: "title, slug, desc and created_by are required",
       });
     }
 
@@ -57,6 +50,7 @@ export const createObjective = async (req, res) => {
       status,
       meta_keywords,
       meta_desc,
+      created_by,
     });
 
     res.status(201).json({
@@ -115,10 +109,10 @@ export const updateObjective = async (req, res) => {
     data.slug = req.body.slug || data.slug;
     data.desc = req.body.desc || data.desc;
     data.status = req.body.status || data.status;
-    data.meta_keywords =
-      req.body.meta_keywords ?? data.meta_keywords;
+    data.meta_keywords = req.body.meta_keywords ?? data.meta_keywords;
     data.meta_desc = req.body.meta_desc ?? data.meta_desc;
     data.image = imageUrl;
+    data.updated_by = req.body.updated_by || data.updated_by;
 
     await data.save();
 

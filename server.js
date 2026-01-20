@@ -6,7 +6,7 @@ import cors from "cors";
 import connectDB from "./src/config/db.js";
 import activityLogRoutes from "./src/routes/activity/activityLogRoutes.js";
 import adminRoutes from "./src/routes/adminRoutes.js";
-import bannerRoutes from "./src/routes/bannerRoutes.js";
+import bannerRoutes from "./src/routes/home_banner/bannerRoutes.js";
 import galleryImageRoutes from "./src/routes/galleryImageRoutes.js";
 import galleryVideoRoutes from "./src/routes/galleryVideoRoutes.js";
 import categoryImageRoutes from "./src/routes/add_by_admin/categoryImageRoutes.js";
@@ -27,6 +27,7 @@ import objNameRoutes from "./src/routes/add_by_admin/objNameRoutes.js";
 import initiativeRoutes from "./src/routes/initiative/initiativeRoutes.js";
 import testimonialRoutes from "./src/routes/testimonial/testimonialRoutes.js";
 import achievementRoutes from "./src/routes/achievement/achievementRoutes.js";
+import organizationRoutes from "./src/routes/add_by_admin/organizationRoutes.js";
 
 const app = express();
 
@@ -81,6 +82,7 @@ app.use("/api/v1/obj-name", objNameRoutes);
 app.use("/api/v1/initiatives", initiativeRoutes);
 app.use("/api/v1/testimonials", testimonialRoutes);
 app.use("/api/v1/achievements", achievementRoutes);
+app.use("/api/v1/organization", organizationRoutes);
 
 app.get("/", (req, res) => res.send("Server Running"));
 

@@ -12,6 +12,7 @@ const objectiveSchema = new mongoose.Schema(
       required: true,
       unique: true,
       lowercase: true,
+      trim: true,
     },
     desc: {
       type: String,
@@ -27,12 +28,22 @@ const objectiveSchema = new mongoose.Schema(
       default: "Active",
     },
     meta_keywords: {
-      type: String, // comma separated
+      type: String,
       default: "",
     },
     meta_desc: {
       type: String,
       default: "",
+    },
+    created_by: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    updated_by: {
+      type: String,
+      default: null,
+      trim: true,
     },
   },
   { timestamps: true }
