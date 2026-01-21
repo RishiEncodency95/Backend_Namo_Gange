@@ -5,7 +5,7 @@ import express from "express";
 import cors from "cors";
 import connectDB from "./src/config/db.js";
 import activityLogRoutes from "./src/routes/activity/activityLogRoutes.js";
-import adminRoutes from "./src/routes/adminRoutes.js";
+// import adminRoutes from "./src/routes/adminRoutes.js";
 import bannerRoutes from "./src/routes/home_banner/bannerRoutes.js";
 import galleryImageRoutes from "./src/routes/galleryImageRoutes.js";
 import galleryVideoRoutes from "./src/routes/galleryVideoRoutes.js";
@@ -28,6 +28,9 @@ import initiativeRoutes from "./src/routes/initiative/initiativeRoutes.js";
 import testimonialRoutes from "./src/routes/testimonial/testimonialRoutes.js";
 import achievementRoutes from "./src/routes/achievement/achievementRoutes.js";
 import organizationRoutes from "./src/routes/add_by_admin/organizationRoutes.js";
+import eventRoutes from "./src/routes/add_by_admin/eventRoutes.js";
+import userRoutes from "./src/routes/user/userRoutes.js";
+import authRoutes from "./src/routes/auth/authRoutes.js";
 
 const app = express();
 
@@ -60,7 +63,7 @@ connectDB();
 
 // Routes
 app.use("/api/v1/activity-logs", activityLogRoutes);
-app.use("/api/v1/admin", adminRoutes);
+// app.use("/api/v1/admin", adminRoutes);
 app.use("/api/v1/banner", bannerRoutes);
 app.use("/api/v1/galleryImage", galleryImageRoutes);
 app.use("/api/v1/gallery-video", galleryVideoRoutes);
@@ -83,6 +86,9 @@ app.use("/api/v1/initiatives", initiativeRoutes);
 app.use("/api/v1/testimonials", testimonialRoutes);
 app.use("/api/v1/achievements", achievementRoutes);
 app.use("/api/v1/organization", organizationRoutes);
+app.use("api/v1/events", eventRoutes);
+app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/auth", authRoutes);
 
 app.get("/", (req, res) => res.send("Server Running"));
 
