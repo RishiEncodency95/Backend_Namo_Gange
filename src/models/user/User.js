@@ -56,6 +56,12 @@ const userSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
+    otp: {
+      type: String,
+    },
+    otp_expires_at: {
+      type: Date,
+    },
   },
   { timestamps: true }
 );
