@@ -14,6 +14,10 @@ const initiativeSchema = new mongoose.Schema(
       lowercase: true,
       trim: true,
     },
+    link: {
+      type: String,
+      default: "",
+    },
     desc: {
       type: String,
       required: true,

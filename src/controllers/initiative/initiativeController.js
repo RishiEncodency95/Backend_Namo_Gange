@@ -5,8 +5,16 @@ import cloudinary from "../../config/cloudinary.js";
 ================================ */
 export const createInitiative = async (req, res) => {
   try {
-    const { title, slug, desc, status, meta_keywords, meta_desc, created_by } =
-      req.body;
+    const {
+      title,
+      link,
+      slug,
+      desc,
+      status,
+      meta_keywords,
+      meta_desc,
+      created_by,
+    } = req.body;
 
     // ✅ image FILE req.file me aayegi
     if (!title || !slug || !desc || !req.file || !created_by) {
@@ -38,6 +46,7 @@ export const createInitiative = async (req, res) => {
       title,
       slug,
       desc,
+      link,
       image: uploadResult.secure_url, // ✅ URL save
       status,
       meta_keywords,
@@ -132,6 +141,7 @@ export const updateInitiative = async (req, res) => {
     data.title = req.body.title || data.title;
     data.slug = req.body.slug || data.slug;
     data.desc = req.body.desc || data.desc;
+    data.link = req.body.link ?? data.link;
     data.status = req.body.status || data.status;
     data.meta_keywords = req.body.meta_keywords ?? data.meta_keywords;
     data.meta_desc = req.body.meta_desc ?? data.meta_desc;

@@ -10,6 +10,12 @@ const BannerSchema = new mongoose.Schema(
       enum: ["Active", "Inactive"],
       default: "Active",
     },
+    schedule: {
+      start_date: { type: String, default: "" },
+      start_time: { type: String, default: "" },
+      days: { type: String, default: "" },
+      end_date: { type: String, default: "" },
+    },
     created_by: {
       type: String,
       required: true,
