@@ -86,7 +86,7 @@ app.use("/api/v1/initiatives", initiativeRoutes);
 app.use("/api/v1/testimonials", testimonialRoutes);
 app.use("/api/v1/achievements", achievementRoutes);
 app.use("/api/v1/organization", organizationRoutes);
-app.use("api/v1/events", eventRoutes);
+app.use("/api/v1/events", eventRoutes);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/auth", authRoutes);
 

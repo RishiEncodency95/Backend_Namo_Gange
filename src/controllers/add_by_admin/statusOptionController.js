@@ -1,69 +1,156 @@
-import StatusOption from "../../models/add_by_admin/StatusOption.js";
-// ➤ Create new status option
+import StatusOption from "../../models/add_by_admin/statusOptionModel.js";
+
+/* ===============================
+   CREATE STATUS OPTION
+================================ */
 export const createStatusOption = async (req, res) => {
   try {
-    const newStatus = new StatusOption(req.body);
-    await newStatus.save();
-    res
-      .status(201)
-      .json({ message: "Status option created successfully", data: newStatus });
+    const { name, status, created_by, updated_by } = req.body;
+
+    if (!name || !created_by) {
+      return res.status(400).json({
+        success: false,
+        message: "name and created_by are required",
+      });
+    }
+
+    const exists = await StatusOption.findOne({ name });
+    if (exists) {
+      return res.status(409).json({
+        success: false,
+        message: "Status option already exists",
+      });
+    }
+
+    const data = await StatusOption.create({
+      name,
+      status,
+      created_by,
+      updated_by,
+    });
+
+    res.status(201).json({
+      success: true,
+      data,
+    });
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error creating status option", error: error.message });
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
-// ➤ Get all status options
-export const getStatusOptions = async (req, res) => {
+/* ===============================
+   GET ALL STATUS OPTIONS
+================================ */
+export const getAllStatusOptions = async (req, res) => {
   try {
-    const statuses = await StatusOption.find();
-    res.status(200).json(statuses);
+    const data = await StatusOption.find().sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      data,
+    });
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error fetching status options", error: error.message });
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
-// ➤ Get one by ID
+/* ===============================
+   GET STATUS OPTION BY ID
+================================ */
 export const getStatusOptionById = async (req, res) => {
   try {
-    const status = await StatusOption.findById(req.params.id);
-    if (!status)
-      return res.status(404).json({ message: "Status option not found" });
-    res.status(200).json(status);
+    const data = await StatusOption.findById(req.params.id);
+
+    if (!data) {
+      return res.status(404).json({
+        success: false,
+        message: "Status option not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data,
+    });
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error fetching status option", error: error.message });
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
-// ➤ Update status option
+/* ===============================
+   UPDATE STATUS OPTION
+================================ */
 export const updateStatusOption = async (req, res) => {
   try {
-    const updated = await StatusOption.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
-    res.status(200).json({ message: "Status option updated", data: updated });
+    const data = await StatusOption.findById(req.params.id);
+
+    if (!data) {
+      return res.status(404).json({
+        success: false,
+        message: "Status option not found",
+      });
+    }
+
+    // unique name check
+    if (req.body.name && req.body.name !== data.name) {
+      const exists = await StatusOption.findOne({ name: req.body.name });
+      if (exists) {
+        return res.status(409).json({
+          success: false,
+          message: "Status option already exists",
+        });
+      }
+    }
+
+    data.name = req.body.name ?? data.name;
+    data.status = req.body.status ?? data.status;
+    data.updated_by = req.body.updated_by ?? data.updated_by;
+
+    await data.save();
+
+    res.status(200).json({
+      success: true,
+      data,
+    });
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error updating status option", error: error.message });
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
-// ➤ Delete status option
+/* ===============================
+   DELETE STATUS OPTION
+================================ */
 export const deleteStatusOption = async (req, res) => {
   try {
-    await StatusOption.findByIdAndDelete(req.params.id);
-    res.status(200).json({ message: "Status option deleted successfully" });
+    const data = await StatusOption.findByIdAndDelete(req.params.id);
+
+    if (!data) {
+      return res.status(404).json({
+        success: false,
+        message: "Status option not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Status option deleted successfully",
+    });
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error deleting status option", error: error.message });
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };

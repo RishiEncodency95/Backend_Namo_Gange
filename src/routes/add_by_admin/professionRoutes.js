@@ -6,13 +6,14 @@ import {
   updateProfession,
   deleteProfession,
 } from "../../controllers/add_by_admin/professionController.js";
+import authMiddleware from "../../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
-router.post("/", createProfession);
+router.post("/create", authMiddleware, createProfession);
 router.get("/", getAllProfessions);
 router.get("/:id", getProfessionById);
-router.put("/:id", updateProfession);
-router.delete("/:id", deleteProfession);
+router.put("/:id", authMiddleware, updateProfession);
+router.delete("/:id", authMiddleware, deleteProfession);
 
 export default router;

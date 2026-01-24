@@ -1,18 +1,19 @@
 import express from "express";
 import {
   createStatusOption,
-  getStatusOptions,
+  getAllStatusOptions,
   getStatusOptionById,
   updateStatusOption,
   deleteStatusOption,
 } from "../../controllers/add_by_admin/statusOptionController.js";
+import authMiddleware from "../../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
-router.post("/", createStatusOption); // ➤ Add new
-router.get("/", getStatusOptions); // ➤ Get all
-router.get("/:id", getStatusOptionById); // ➤ Get one
-router.put("/:id", updateStatusOption); // ➤ Update
-router.delete("/:id", deleteStatusOption); // ➤ Delete
+router.post("/create", authMiddleware, createStatusOption);
+router.get("/", getAllStatusOptions);
+router.get("/:id", getStatusOptionById);
+router.put("/:id", authMiddleware, updateStatusOption);
+router.delete("/:id", authMiddleware, deleteStatusOption);
 
 export default router;

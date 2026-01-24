@@ -6,31 +6,28 @@ const statusOptionSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
+      unique: true,
     },
+
     status: {
       type: String,
-      enum: ["active", "inactive"],
-      default: "inactive",
+      enum: ["Active", "Inactive"],
+      default: "Inactive",
     },
-    user: {
+
+    created_by: {
       type: String,
-      default: null,
+      required: true,
       trim: true,
     },
+
     updated_by: {
       type: String,
       default: null,
       trim: true,
     },
-    added: {
-      type: Date,
-      default: Date.now,
-    },
   },
-  {
-    timestamps: { createdAt: "added", updatedAt: "updated" },
-  }
+  { timestamps: true } // createdAt, updatedAt
 );
 
-const StatusOption = mongoose.model("StatusOption", statusOptionSchema);
-export default StatusOption;
+export default mongoose.model("StatusOption", statusOptionSchema);

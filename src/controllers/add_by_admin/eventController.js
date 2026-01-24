@@ -5,12 +5,45 @@ import Event from "../../models/add_by_admin/eventModel.js";
 ================================ */
 export const createEvent = async (req, res) => {
   try {
-    const event = await Event.create(req.body);
+    const {
+      name,
+      date,
+      reporting_point,
+      coordinator_contact,
+      reporting_time,
+      HSN_code,
+      link,
+      description,
+      status,
+      created_by,
+      updated_by,
+    } = req.body;
+
+    if (!name || !date || !created_by) {
+      return res.status(400).json({
+        success: false,
+        message: "name, date and created_by are required",
+      });
+    }
+
+    const data = await Event.create({
+      name,
+      date,
+      reporting_point,
+      coordinator_contact,
+      reporting_time,
+      HSN_code,
+      link,
+      description,
+      status,
+      created_by,
+      updated_by,
+    });
 
     res.status(201).json({
       success: true,
       message: "Event created successfully",
-      data: event,
+      data,
     });
   } catch (error) {
     res.status(500).json({
@@ -25,11 +58,11 @@ export const createEvent = async (req, res) => {
 ================================ */
 export const getAllEvents = async (req, res) => {
   try {
-    const events = await Event.find().sort({ createdAt: -1 });
+    const data = await Event.find().sort({ createdAt: -1 });
 
     res.status(200).json({
       success: true,
-      data: events,
+      data,
     });
   } catch (error) {
     res.status(500).json({
@@ -44,9 +77,9 @@ export const getAllEvents = async (req, res) => {
 ================================ */
 export const getEventById = async (req, res) => {
   try {
-    const event = await Event.findById(req.params.id);
+    const data = await Event.findById(req.params.id);
 
-    if (!event) {
+    if (!data) {
       return res.status(404).json({
         success: false,
         message: "Event not found",
@@ -55,7 +88,7 @@ export const getEventById = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      data: event,
+      data,
     });
   } catch (error) {
     res.status(500).json({
@@ -70,16 +103,33 @@ export const getEventById = async (req, res) => {
 ================================ */
 export const updateEvent = async (req, res) => {
   try {
-    const event = await Event.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
+    const data = await Event.findById(req.params.id);
+
+    if (!data) {
+      return res.status(404).json({
+        success: false,
+        message: "Event not found",
+      });
+    }
+
+    data.name = req.body.name ?? data.name;
+    data.date = req.body.date ?? data.date;
+    data.reporting_point = req.body.reporting_point ?? data.reporting_point;
+    data.coordinator_contact =
+      req.body.coordinator_contact ?? data.coordinator_contact;
+    data.reporting_time = req.body.reporting_time ?? data.reporting_time;
+    data.HSN_code = req.body.HSN_code ?? data.HSN_code;
+    data.link = req.body.link ?? data.link;
+    data.description = req.body.description ?? data.description;
+    data.status = req.body.status ?? data.status;
+    data.updated_by = req.body.updated_by ?? data.updated_by;
+
+    await data.save();
 
     res.status(200).json({
       success: true,
       message: "Event updated successfully",
-      data: event,
+      data,
     });
   } catch (error) {
     res.status(500).json({
@@ -94,7 +144,14 @@ export const updateEvent = async (req, res) => {
 ================================ */
 export const deleteEvent = async (req, res) => {
   try {
-    await Event.findByIdAndDelete(req.params.id);
+    const data = await Event.findByIdAndDelete(req.params.id);
+
+    if (!data) {
+      return res.status(404).json({
+        success: false,
+        message: "Event not found",
+      });
+    }
 
     res.status(200).json({
       success: true,

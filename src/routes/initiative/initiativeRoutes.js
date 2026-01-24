@@ -11,10 +11,15 @@ import authMiddleware from "../../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
-router.post("/create", upload.single("image"),authMiddleware, createInitiative);
+router.post(
+  "/create",
+  upload.single("image"),
+  authMiddleware,
+  createInitiative
+);
 router.get("/", getAllInitiatives);
 router.get("/:id", getInitiativeById);
-router.put("/:id", upload.single("image"),authMiddleware, updateInitiative);
-router.delete("/:id",authMiddleware, deleteInitiative);
+router.put("/:id", upload.single("image"), authMiddleware, updateInitiative);
+router.delete("/:id", authMiddleware, deleteInitiative);
 
 export default router;
