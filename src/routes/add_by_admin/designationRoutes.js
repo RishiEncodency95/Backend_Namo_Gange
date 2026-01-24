@@ -6,13 +6,14 @@ import {
   updateDesignation,
   deleteDesignation,
 } from "../../controllers/add_by_admin/designationController.js";
+import authMiddleware from "../../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
-router.post("/", createDesignation);
+router.post("/create", authMiddleware, createDesignation);
 router.get("/", getAllDesignations);
 router.get("/:id", getDesignationById);
-router.put("/:id", updateDesignation);
-router.delete("/:id", deleteDesignation);
+router.put("/:id", authMiddleware, updateDesignation);
+router.delete("/:id", authMiddleware, deleteDesignation);
 
 export default router;

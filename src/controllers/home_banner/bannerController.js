@@ -15,7 +15,7 @@ const uploadToCloudinary = (buffer) =>
 /* ================= CREATE BANNER ================= */
 export const createBanner = async (req, res) => {
   try {
-    const { title, link, status, created_by } = req.body;
+    const { title, link, status, created_by, schedule } = req.body;
 
     if (!title || !link || !created_by) {
       return res.status(400).json({
@@ -30,7 +30,14 @@ export const createBanner = async (req, res) => {
         message: "Image is required",
       });
     }
-
+    let parsedSchedule = {};
+    if (schedule) {
+      try {
+        parsedSchedule = JSON.parse(schedule);
+      } catch (error) {
+        parsedSchedule = schedule;
+      }
+    }
     const uploadResult = await uploadToCloudinary(req.file.buffer);
 
     const banner = await Banner.create({
@@ -39,6 +46,7 @@ export const createBanner = async (req, res) => {
       image: uploadResult.secure_url,
       status: status || "Active",
       created_by,
+      schedule: parsedSchedule,
     });
 
     res.status(201).json({
@@ -119,7 +127,13 @@ export const updateBanner = async (req, res) => {
     banner.status = req.body.status || banner.status;
     banner.updated_by = req.body.updated_by || banner.updated_by;
     banner.image = imageUrl;
-
+    if (req.body.schedule) {
+      try {
+        banner.schedule = JSON.parse(req.body.schedule);
+      } catch (error) {
+        banner.schedule = req.body.schedule;
+      }
+    }
     await banner.save();
 
     res.status(200).json({

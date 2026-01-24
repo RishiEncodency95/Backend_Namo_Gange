@@ -7,13 +7,19 @@ import {
   updateInitiative,
   deleteInitiative,
 } from "../../controllers/initiative/initiativeController.js";
+import authMiddleware from "../../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
-router.post("/create", upload.single("image"), createInitiative);
+router.post(
+  "/create",
+  upload.single("image"),
+  authMiddleware,
+  createInitiative
+);
 router.get("/", getAllInitiatives);
 router.get("/:id", getInitiativeById);
-router.put("/:id", upload.single("image"), updateInitiative);
-router.delete("/:id", deleteInitiative);
+router.put("/:id", upload.single("image"), authMiddleware, updateInitiative);
+router.delete("/:id", authMiddleware, deleteInitiative);
 
 export default router;
