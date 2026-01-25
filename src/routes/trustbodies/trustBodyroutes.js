@@ -1,60 +1,18 @@
 import express from "express";
+import upload from "../../utils/multer.js";
+import authMiddleware from "../../middlewares/authMiddleware.js";
 import {
   createTrustBody,
   getAllTrustBodies,
-  getTrustBody,
   updateTrustBody,
   deleteTrustBody,
-  toggleTrustBodyStatus,
-} from "../../controllers/trustbody/trustBodycontroller.js";
-
-import upload from "../../utils/multer.js"; // multer middleware
-import authMiddleware from "../../middlewares/authMiddleware.js"; // optional admin auth
+} from "../../controllers/trustbody/trustBodyController.js";
 
 const router = express.Router();
 
-/* ======================================================
-   ADMIN ROUTES
-====================================================== */
-
-// Create Trust Body
-router.post(
-  "/",
-  // authMiddleware,
-  upload.single("image"),
-  createTrustBody
-);
-
-// Update Trust Body
-router.put(
-  "/:id",
-  // authMiddleware,
-  upload.single("image"),
-  updateTrustBody
-);
-
-// Delete Trust Body
-router.delete(
-  "/:id",
-  // authMiddleware,
-  deleteTrustBody
-);
-
-// Toggle Active / Inactive
-router.patch(
-  "/:id/status",
-  // authMiddleware,
-  toggleTrustBodyStatus
-);
-
-/* ======================================================
-   PUBLIC ROUTES
-====================================================== */
-
-// Get all trust bodies (pagination + filter)
+router.post("/create", authMiddleware, upload.single("image"), createTrustBody);
 router.get("/", getAllTrustBodies);
-
-// Get single trust body (by ID or slug)
-router.get("/:id", getTrustBody);
+router.put("/:id", authMiddleware, upload.single("image"), updateTrustBody);
+router.delete("/:id", authMiddleware, deleteTrustBody);
 
 export default router;

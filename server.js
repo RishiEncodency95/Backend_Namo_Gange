@@ -38,6 +38,7 @@ import sourceRoutes from "./src/routes/add_by_admin/sourceRoutes.js";
 import callTargetRoutes from "./src/routes/add_by_admin/callTargetRoutes.js";
 import coordinatorRoutes from "./src/routes/add_by_admin/coordinatorStatusRoutes.js";
 import bankRoutes from "./src/routes/add_by_admin/bankRoutes.js";
+import publishedRoutes from "./src/routes/add_by_admin/publishedRoutes.js";
 
 const app = express();
 
@@ -74,7 +75,7 @@ app.use("/api/v1/activity-logs", activityLogRoutes);
 app.use("/api/v1/banner", bannerRoutes);
 app.use("/api/v1/galleryImage", galleryImageRoutes);
 app.use("/api/v1/gallery-video", galleryVideoRoutes);
-app.use("/api/v1/trustbodies", trustbodyRoutes);
+app.use("/api/v1/trust-bodies", trustbodyRoutes);
 app.use("/api/v1/newsLetter", newsLetterRoutes);
 app.use("/api/v1/category-image", categoryImageRoutes);
 app.use("/api/v1/category-video", categoryVideoRoutes);
@@ -103,6 +104,7 @@ app.use("/api/v1/sources", sourceRoutes);
 app.use("/api/v1/call-target", callTargetRoutes);
 app.use("/api/v1/coordinator-status", coordinatorRoutes);
 app.use("/api/v1/banks", bankRoutes);
+app.use("/api/v1/published", publishedRoutes);
 
 app.get("/", (req, res) => res.send("Server Running"));
 
