@@ -1,40 +1,30 @@
-import University from "../../models/add_by_admin/universityModel.js";
+import CallTarget from "../../models/add_by_admin/callTargetModel.js";
 
 /* ===============================
-   CREATE UNIVERSITY
+   CREATE CALL TARGET
 ================================ */
-export const createUniversity = async (req, res) => {
+export const createCallTarget = async (req, res) => {
   try {
-    const { name, country, state, city, status, created_by } = req.body;
+    const { employee, date, call_target, status, created_by } = req.body;
 
-    if (!name || !country || !state || !city || !created_by) {
+    if (!employee || !date || !call_target) {
       return res.status(400).json({
         success: false,
-        message: "All required fields must be filled",
+        message: "employee, date and call_target are required",
       });
     }
 
-    const exists = await University.findOne({ name });
-    if (exists) {
-      return res.status(409).json({
-        success: false,
-        message: "University already exists",
-      });
-    }
-
-    const data = await University.create({
-      name,
-      country,
-      state,
-      city,
+    const data = await CallTarget.create({
+      employee,
+      date,
+      call_target,
       status,
       created_by,
-      updated_by: created_by,
     });
 
     res.status(201).json({
       success: true,
-      message: "University created successfully",
+      message: "Call target created successfully",
       data,
     });
   } catch (error) {
@@ -46,11 +36,11 @@ export const createUniversity = async (req, res) => {
 };
 
 /* ===============================
-   GET ALL UNIVERSITIES
+   GET ALL CALL TARGETS
 ================================ */
-export const getAllUniversities = async (req, res) => {
+export const getAllCallTargets = async (req, res) => {
   try {
-    const data = await University.find().sort({ createdAt: -1 });
+    const data = await CallTarget.find().sort({ createdAt: -1 });
 
     res.status(200).json({
       success: true,
@@ -65,16 +55,16 @@ export const getAllUniversities = async (req, res) => {
 };
 
 /* ===============================
-   GET UNIVERSITY BY ID
+   GET CALL TARGET BY ID
 ================================ */
-export const getUniversityById = async (req, res) => {
+export const getCallTargetById = async (req, res) => {
   try {
-    const data = await University.findById(req.params.id);
+    const data = await CallTarget.findById(req.params.id);
 
     if (!data) {
       return res.status(404).json({
         success: false,
-        message: "University not found",
+        message: "Call target not found",
       });
     }
 
@@ -91,23 +81,22 @@ export const getUniversityById = async (req, res) => {
 };
 
 /* ===============================
-   UPDATE UNIVERSITY
+   UPDATE CALL TARGET
 ================================ */
-export const updateUniversity = async (req, res) => {
+export const updateCallTarget = async (req, res) => {
   try {
-    const data = await University.findById(req.params.id);
+    const data = await CallTarget.findById(req.params.id);
 
     if (!data) {
       return res.status(404).json({
         success: false,
-        message: "University not found",
+        message: "Call target not found",
       });
     }
 
-    data.name = req.body.name ?? data.name;
-    data.country = req.body.country ?? data.country;
-    data.state = req.body.state ?? data.state;
-    data.city = req.body.city ?? data.city;
+    data.employee = req.body.employee ?? data.employee;
+    data.date = req.body.date ?? data.date;
+    data.call_target = req.body.call_target ?? data.call_target;
     data.status = req.body.status ?? data.status;
     data.updated_by = req.body.updated_by ?? data.updated_by;
 
@@ -115,7 +104,7 @@ export const updateUniversity = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: "University updated successfully",
+      message: "Call target updated successfully",
       data,
     });
   } catch (error) {
@@ -127,22 +116,22 @@ export const updateUniversity = async (req, res) => {
 };
 
 /* ===============================
-   DELETE UNIVERSITY
+   DELETE CALL TARGET
 ================================ */
-export const deleteUniversity = async (req, res) => {
+export const deleteCallTarget = async (req, res) => {
   try {
-    const data = await University.findByIdAndDelete(req.params.id);
+    const data = await CallTarget.findByIdAndDelete(req.params.id);
 
     if (!data) {
       return res.status(404).json({
         success: false,
-        message: "University not found",
+        message: "Call target not found",
       });
     }
 
     res.status(200).json({
       success: true,
-      message: "University deleted successfully",
+      message: "Call target deleted successfully",
     });
   } catch (error) {
     res.status(500).json({

@@ -1,30 +1,21 @@
 import mongoose from "mongoose";
 
-const universitySchema = new mongoose.Schema(
+const callTargetSchema = new mongoose.Schema(
   {
-    name: {
-      type: String,
-      required: true,
-      trim: true,
-      unique: true,
-    },
-
-    country: {
+    employee: {
       type: String,
       required: true,
       trim: true,
     },
 
-    state: {
-      type: String,
+    date: {
+      type: Date,
       required: true,
-      trim: true,
     },
 
-    city: {
-      type: String,
+    call_target: {
+      type: Number,
       required: true,
-      trim: true,
     },
 
     status: {
@@ -35,17 +26,15 @@ const universitySchema = new mongoose.Schema(
 
     created_by: {
       type: String,
-      required: true,
-      trim: true,
+      default: null,
     },
 
     updated_by: {
       type: String,
       default: null,
-      trim: true,
     },
   },
   { timestamps: true }
 );
 
-export default mongoose.model("University", universitySchema);
+export default mongoose.model("CallTarget", callTargetSchema);

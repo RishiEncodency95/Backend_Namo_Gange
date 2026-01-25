@@ -1,30 +1,29 @@
 import mongoose from "mongoose";
 
-const universitySchema = new mongoose.Schema(
+const bankSchema = new mongoose.Schema(
   {
-    name: {
-      type: String,
-      required: true,
-      trim: true,
-      unique: true,
-    },
-
-    country: {
+    bank_name: {
       type: String,
       required: true,
       trim: true,
     },
 
-    state: {
+    bank_branch: {
       type: String,
-      required: true,
       trim: true,
+      default: "",
     },
 
-    city: {
+    account_number: {
       type: String,
-      required: true,
       trim: true,
+      required: true,
+    },
+
+    ifsc_code: {
+      type: String,
+      trim: true,
+      required: true,
     },
 
     status: {
@@ -35,17 +34,15 @@ const universitySchema = new mongoose.Schema(
 
     created_by: {
       type: String,
-      required: true,
-      trim: true,
+      default: null,
     },
 
     updated_by: {
       type: String,
       default: null,
-      trim: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true } // createdAt, updatedAt
 );
 
-export default mongoose.model("University", universitySchema);
+export default mongoose.model("Bank", bankSchema);

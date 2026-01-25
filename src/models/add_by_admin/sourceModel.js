@@ -1,30 +1,54 @@
 import mongoose from "mongoose";
 
-const universitySchema = new mongoose.Schema(
+const sourceSchema = new mongoose.Schema(
   {
     name: {
       type: String,
       required: true,
       trim: true,
-      unique: true,
+    },
+
+    mobile: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    email: {
+      type: String,
+      trim: true,
+      lowercase: true,
+      default: "",
+    },
+
+    address: {
+      type: String,
+      trim: true,
+      default: "",
     },
 
     country: {
       type: String,
-      required: true,
       trim: true,
+      default: "",
     },
 
     state: {
       type: String,
-      required: true,
       trim: true,
+      default: "",
     },
 
     city: {
       type: String,
-      required: true,
       trim: true,
+      default: "",
+    },
+
+    pinCode: {
+      type: String,
+      trim: true,
+      default: "",
     },
 
     status: {
@@ -35,7 +59,7 @@ const universitySchema = new mongoose.Schema(
 
     created_by: {
       type: String,
-      required: true,
+      default: null,
       trim: true,
     },
 
@@ -48,4 +72,4 @@ const universitySchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export default mongoose.model("University", universitySchema);
+export default mongoose.model("Source", sourceSchema);
