@@ -20,30 +20,30 @@ const router = express.Router();
 // Create Trust Body
 router.post(
   "/",
-  // authMiddleware,
   upload.single("image"),
+  authMiddleware,
   createTrustBody
 );
 
 // Update Trust Body
 router.put(
   "/:id",
-  // authMiddleware,
   upload.single("image"),
+  authMiddleware,
   updateTrustBody
 );
 
 // Delete Trust Body
 router.delete(
   "/:id",
-  // authMiddleware,
+  authMiddleware,
   deleteTrustBody
 );
 
 // Toggle Active / Inactive
 router.patch(
   "/:id/status",
-  // authMiddleware,
+  authMiddleware,
   toggleTrustBodyStatus
 );
 

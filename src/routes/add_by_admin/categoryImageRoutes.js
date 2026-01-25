@@ -7,13 +7,14 @@ import {
   updateCategoryImage,
   deleteCategoryImage,
 } from "../../controllers/add_by_admin/categoryImageController.js";
+import authMiddleware from "../../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
-router.post("/create", upload.single("image"), createCategoryImage);
+router.post("/create", upload.single("image"), authMiddleware, createCategoryImage);
 router.get("/", getAllCategoryImages);
 router.get("/:id", getCategoryImageById);
-router.put("/:id", upload.single("image"), updateCategoryImage);
-router.delete("/:id", deleteCategoryImage);
+router.put("/:id", upload.single("image"), authMiddleware, updateCategoryImage);
+router.delete("/:id", authMiddleware, deleteCategoryImage);
 
 export default router;

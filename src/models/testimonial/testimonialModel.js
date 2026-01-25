@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const testimonialSchema = new mongoose.Schema(
   {
-    title: {
+    name: {
       type: String,
       required: true,
       trim: true,
