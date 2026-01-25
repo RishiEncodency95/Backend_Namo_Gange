@@ -2,54 +2,54 @@ import mongoose from "mongoose";
 
 const TrustBodySchema = new mongoose.Schema(
   {
-    // Name of trust member
     name: {
       type: String,
-      required: [true, "Name is required"],
+      required: true,
       trim: true,
       maxlength: 150,
     },
 
-    // SEO-friendly URL slug
     slug: {
       type: String,
-      required: [true, "Slug is required"],
       unique: true,
       lowercase: true,
       trim: true,
     },
 
-    // Designation (Chairman, Trustee, Secretary etc.)
     designation: {
       type: String,
-      required: [true, "Designation is required"],
+      required: true,
       trim: true,
-      maxlength: 100,
     },
 
-    // Image path or URL
     image: {
-      type: String,
-      default: null,
+      type: String, // ✅ ONLY CLOUDINARY URL
+      required: true,
     },
 
-    // Active / Inactive
     status: {
       type: String,
-      enum: ["active", "inactive"],
-      default: "active",
+      enum: ["Active", "Inactive"],
+      default: "Active",
     },
 
-    // Description / About
     description: {
       type: String,
       default: "",
       trim: true,
     },
+
+    created_by: {
+      type: String,
+      required: true,
+    },
+
+    updated_by: {
+      type: String,
+      default: null,
+    },
   },
-  {
-    timestamps: true, // createdAt & updatedAt
-  }
+  { timestamps: true }
 );
 
 export default mongoose.model("TrustBody", TrustBodySchema);
