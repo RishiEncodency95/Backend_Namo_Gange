@@ -14,11 +14,17 @@ const FaqSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    category: {
+      type: String,
+      required: true,
+      trim: true,
+      default: "General",
+    },
 
     status: {
       type: String,
-      enum: ["active", "inactive"],
-      default: "active",
+      enum: ["Active", "Inactive"],
+      default: "Active",
     },
   },
   {

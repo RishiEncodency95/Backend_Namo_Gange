@@ -17,6 +17,7 @@ export const createFaq = async (req, res) => {
     const faq = await Faq.create({
       question,
       answer,
+      category: "General",
       status: status || "active",
     });
 
@@ -83,7 +84,7 @@ export const getFaq = async (req, res) => {
 ====================================================== */
 export const updateFaq = async (req, res) => {
   try {
-    const { question, answer, status } = req.body;
+    const { question, answer, category, status } = req.body;
 
     const faq = await Faq.findById(req.params.id);
     if (!faq) {
@@ -95,6 +96,7 @@ export const updateFaq = async (req, res) => {
 
     faq.question = question ?? faq.question;
     faq.answer = answer ?? faq.answer;
+    faq.category = category ?? faq.category;
     faq.status = status ?? faq.status;
 
     await faq.save();

@@ -7,13 +7,14 @@ import {
   updateBlog,
   deleteBlog,
 } from "../../controllers/blog/blogController.js";
+import authMiddleware from "../../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
-router.post("/create", upload.single("image"), createBlog);
+router.post("/create", upload.single("image"), authMiddleware, createBlog);
 router.get("/", getAllBlogs);
 router.get("/:id", getBlogById);
-router.put("/:id", upload.single("image"), updateBlog);
-router.delete("/:id", deleteBlog);
+router.put("/:id", upload.single("image"), authMiddleware, updateBlog);
+router.delete("/:id", authMiddleware, deleteBlog);
 
 export default router;

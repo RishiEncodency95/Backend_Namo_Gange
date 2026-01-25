@@ -1,14 +1,26 @@
 import Blog from "../../models/blog/BlogModel.js";
 import cloudinary from "../../config/cloudinary.js";
 import fs from "fs";
+import slugify from "slugify";
+
+/* ================= CLOUDINARY HELPER ================= */
+const uploadToCloudinary = (buffer) =>
+  new Promise((resolve, reject) => {
+    cloudinary.uploader
+      .upload_stream({ folder: "blogs" }, (error, result) => {
+        if (error) reject(error);
+        else resolve(result);
+      })
+      .end(buffer);
+  });
 
 /* ================= CREATE BLOG ================= */
 export const createBlog = async (req, res) => {
   try {
     const {
       title,
-      slug,
       category,
+      author,
       meta_keyword,
       meta_description,
       description,
@@ -22,7 +34,7 @@ export const createBlog = async (req, res) => {
         .status(400)
         .json({ success: false, message: "Image is required" });
     }
-
+    const slug = slugify(title, { lower: true, strict: true });
     const exists = await Blog.findOne({ slug });
     if (exists) {
       return res
@@ -30,16 +42,14 @@ export const createBlog = async (req, res) => {
         .json({ success: false, message: "Slug already exists" });
     }
 
-    const upload = await cloudinary.uploader.upload(req.file.path, {
-      folder: "blogs",
-    });
+    const upload = await uploadToCloudinary(req.file.buffer);
 
-    fs.unlinkSync(req.file.path);
 
     const blog = await Blog.create({
       title,
       slug,
       category,
+      author,
       meta_keyword,
       meta_description,
       description,
@@ -96,16 +106,14 @@ export const updateBlog = async (req, res) => {
     let imageUrl = blog.image;
 
     if (req.file) {
-      const upload = await cloudinary.uploader.upload(req.file.path, {
-        folder: "blogs",
-      });
-      fs.unlinkSync(req.file.path);
+      const upload = await uploadToCloudinary(req.file.buffer);
       imageUrl = upload.secure_url;
     }
 
     blog.title = req.body.title || blog.title;
     blog.slug = req.body.slug || blog.slug;
     blog.category = req.body.category || blog.category;
+    blog.author = req.body.author || blog.author;
     blog.meta_keyword = req.body.meta_keyword || blog.meta_keyword;
     blog.meta_description = req.body.meta_description || blog.meta_description;
     blog.description = req.body.description || blog.description;
