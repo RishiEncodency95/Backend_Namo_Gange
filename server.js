@@ -34,6 +34,10 @@ import organizationRoutes from "./src/routes/add_by_admin/organizationRoutes.js"
 import eventRoutes from "./src/routes/add_by_admin/eventRoutes.js";
 import userRoutes from "./src/routes/user/userRoutes.js";
 import authRoutes from "./src/routes/auth/authRoutes.js";
+import sourceRoutes from "./src/routes/add_by_admin/sourceRoutes.js";
+import callTargetRoutes from "./src/routes/add_by_admin/callTargetRoutes.js";
+import coordinatorRoutes from "./src/routes/add_by_admin/coordinatorStatusRoutes.js";
+import bankRoutes from "./src/routes/add_by_admin/bankRoutes.js";
 
 const app = express();
 
@@ -70,13 +74,13 @@ app.use("/api/v1/activity-logs", activityLogRoutes);
 app.use("/api/v1/banner", bannerRoutes);
 app.use("/api/v1/galleryImage", galleryImageRoutes);
 app.use("/api/v1/gallery-video", galleryVideoRoutes);
-app.use("/api/v1/trustbodies",trustbodyRoutes);
-app.use("/api/v1/newsLetter",newsLetterRoutes);
+app.use("/api/v1/trustbodies", trustbodyRoutes);
+app.use("/api/v1/newsLetter", newsLetterRoutes);
 app.use("/api/v1/category-image", categoryImageRoutes);
 app.use("/api/v1/category-video", categoryVideoRoutes);
 app.use("/api/v1/status-option", statusOptionRoutes);
 app.use("/api/v1/blog", blogRoutes);
-app.use("/api/v1/faq",faqRoutes);
+app.use("/api/v1/faq", faqRoutes);
 app.use("/api/v1/members", memberRoutes);
 app.use("/api/v1/categories", categoryRoutes);
 app.use("/api/v1/occupations", occupationRoutes);
@@ -95,6 +99,10 @@ app.use("/api/v1/organization", organizationRoutes);
 app.use("/api/v1/events", eventRoutes);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/sources", sourceRoutes);
+app.use("/api/v1/call-target", callTargetRoutes);
+app.use("/api/v1/coordinator-status", coordinatorRoutes);
+app.use("/api/v1/banks", bankRoutes);
 
 app.get("/", (req, res) => res.send("Server Running"));
 

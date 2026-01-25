@@ -6,13 +6,14 @@ import {
   updateUniversity,
   deleteUniversity,
 } from "../../controllers/add_by_admin/universityController.js";
+import authMiddleware from "../../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
-router.post("/", createUniversity); // CREATE
-router.get("/", getAllUniversities); // GET ALL
-router.get("/:id", getUniversityById); // GET BY ID
-router.put("/:id", updateUniversity); // UPDATE
-router.delete("/:id", deleteUniversity); // DELETE
+router.post("/create", authMiddleware, createUniversity);
+router.get("/", getAllUniversities);
+router.get("/:id", getUniversityById);
+router.put("/:id", authMiddleware, updateUniversity);
+router.delete("/:id", authMiddleware, deleteUniversity);
 
 export default router;
