@@ -5,15 +5,18 @@ import fs from "fs";
 // ---------------- CREATE ----------------
 export const createGallery = async (req, res) => {
   try {
+    const { title, category, date, location, createdBy } = req.body;
     if (!req.file)
       return res.status(400).json({ success: false, message: "Image missing" });
 
-    const upload = await cloudinary.uploader.upload(req.file.path, {
-      folder: "gallery_images",
+    const upload = await new Promise((resolve, reject) => {
+      cloudinary.uploader
+        .upload_stream({ folder: "gallery_images" }, (error, result) => {
+          if (error) reject(error);
+          else resolve(result);
+        })
+        .end(req.file.buffer);
     });
-
-    fs.unlinkSync(req.file.path);
-
     const galleryImage = await GalleryImage.create({
       title: req.body.title,
       category: req.body.category,

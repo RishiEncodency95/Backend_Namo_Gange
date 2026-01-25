@@ -10,7 +10,43 @@ import {
 
 const router = express.Router();
 
-router.post("/create", authMiddleware, upload.single("image"), createTrustBody);
+/* ======================================================
+   ADMIN ROUTES
+
+// Create Trust Body
+router.post(
+  "/",
+  upload.single("image"),
+  authMiddleware,
+  createTrustBody
+);
+
+// Update Trust Body
+router.put(
+  "/:id",
+  upload.single("image"),
+  authMiddleware,
+  updateTrustBody
+);
+
+// Delete Trust Body
+router.delete(
+  "/:id",
+  authMiddleware,
+  deleteTrustBody
+);
+
+// Toggle Active / Inactive
+router.patch(
+  "/:id/status",
+  authMiddleware,
+  toggleTrustBodyStatus
+);
+
+/* ======================================================
+   PUBLIC ROUTES
+
+// Get all trust bodies (pagination + filter)
 router.get("/", getAllTrustBodies);
 router.put("/:id", authMiddleware, upload.single("image"), updateTrustBody);
 router.delete("/:id", authMiddleware, deleteTrustBody);

@@ -1,6 +1,5 @@
 import CategoryImage from "../../models/add_by_admin/CategoryImageModel.js";
 import cloudinary from "../../config/cloudinary.js";
-import fs from "fs";
 
 // ✅ CREATE
 export const createCategoryImage = async (req, res) => {
@@ -9,13 +8,14 @@ export const createCategoryImage = async (req, res) => {
       return res
         .status(400)
         .json({ success: false, message: "Image required" });
-
-    const upload = await cloudinary.uploader.upload(req.file.path, {
-      folder: "category_images",
+    const upload = await new Promise((resolve, reject) => {
+      cloudinary.uploader
+        .upload_stream({ folder: "category_images" }, (error, result) => {
+          if (error) reject(error);
+          else resolve(result);
+        })
+        .end(req.file.buffer);
     });
-
-    fs.unlinkSync(req.file.path);
-
     const categoryImage = await CategoryImage.create({
       title: req.body.title,
       category: req.body.category,
@@ -71,10 +71,17 @@ export const updateCategoryImage = async (req, res) => {
     let newImage = categoryImage.image;
 
     if (req.file) {
-      const upload = await cloudinary.uploader.upload(req.file.path, {
-        folder: "category_images",
+      // const upload = await cloudinary.uploader.upload(req.file.path, {
+      //   folder: "category_images",
+      // });
+      const upload = await new Promise((resolve, reject) => {
+        cloudinary.uploader
+          .upload_stream({ folder: "category_images" }, (error, result) => {
+            if (error) reject(error);
+            else resolve(result);
+          })
+          .end(req.file.buffer);
       });
-
       newImage = upload.secure_url;
       fs.unlinkSync(req.file.path);
     }

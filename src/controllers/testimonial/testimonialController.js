@@ -6,12 +6,12 @@ import cloudinary from "../../config/cloudinary.js";
 ================================ */
 export const createTestimonial = async (req, res) => {
   try {
-    const { title, desc, status, created_by } = req.body;
+    const { name, desc, status, created_by } = req.body;
 
-    if (!title || !desc || !created_by || !req.file) {
+    if (!name || !desc || !created_by || !req.file) {
       return res.status(400).json({
         success: false,
-        message: "title, image, desc and created_by are required",
+        message: "name, image, desc and created_by are required",
       });
     }
 
@@ -26,7 +26,7 @@ export const createTestimonial = async (req, res) => {
     });
 
     const data = await Testimonial.create({
-      title,
+      name,
       image: uploadResult.secure_url,
       desc,
       status,
@@ -118,7 +118,7 @@ export const updateTestimonial = async (req, res) => {
       data.image = uploadResult.secure_url;
     }
 
-    data.title = req.body.title || data.title;
+    data.name = req.body.name || data.name;
     data.desc = req.body.desc || data.desc;
     data.status = req.body.status || data.status;
     data.updated_by = req.body.updated_by || data.updated_by;

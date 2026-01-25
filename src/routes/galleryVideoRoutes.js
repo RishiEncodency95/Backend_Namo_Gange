@@ -6,13 +6,13 @@ import {
   updateGalleryVideo,
   deleteGalleryVideo,
 } from "../controllers/galleryVideoController.js";
+import authMiddleware from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
-router.post("/create", createGalleryVideo);
+router.post("/create", authMiddleware, createGalleryVideo);
 router.get("/", getAllGalleryVideos);
 router.get("/:id", getGalleryVideoById);
-router.put("/:id", updateGalleryVideo);
-router.delete("/:id", deleteGalleryVideo);
-
+router.put("/:id", authMiddleware, updateGalleryVideo);
+router.delete("/:id", authMiddleware, deleteGalleryVideo);
 export default router;
