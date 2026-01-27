@@ -1,22 +1,20 @@
+// routes/newsletter/newsLetterRoutes.js
 import express from "express";
+import upload from "../../utils/multer.js";
+import authMiddleware from "../../middlewares/authMiddleware.js";
 import {
   createNewsLetter,
   getAllNewsLetters,
-  getNewsLetter,
+  getNewsLetterById,
   updateNewsLetter,
   deleteNewsLetter,
-  toggleNewsLetterStatus,
 } from "../../controllers/newsletters/newsLettercontroller.js";
-
-import upload from "../../utils/multer.js";
-import authMiddleware from "../../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
-/* ADMIN */
 router.post(
-  "/",
-  // authMiddleware,
+  "/create",
+  authMiddleware,
   upload.fields([
     { name: "image", maxCount: 1 },
     { name: "pdf", maxCount: 1 },
@@ -24,9 +22,12 @@ router.post(
   createNewsLetter
 );
 
+router.get("/", getAllNewsLetters);
+router.get("/:id", getNewsLetterById);
+
 router.put(
   "/:id",
-  // authMiddleware,
+  authMiddleware,
   upload.fields([
     { name: "image", maxCount: 1 },
     { name: "pdf", maxCount: 1 },
@@ -34,11 +35,6 @@ router.put(
   updateNewsLetter
 );
 
-router.delete("/:id", /* authMiddleware, */ deleteNewsLetter);
-router.patch("/:id/status", /* authMiddleware, */ toggleNewsLetterStatus);
-
-/* PUBLIC */
-router.get("/", getAllNewsLetters);
-router.get("/:id", getNewsLetter);
+router.delete("/:id", authMiddleware, deleteNewsLetter);
 
 export default router;
