@@ -1,17 +1,18 @@
 import express from "express";
 import upload from "../../utils/multer.js";
 import authMiddleware from "../../middlewares/authMiddleware.js";
-import {
-  createTrustBody,
-  getAllTrustBodies,
-  updateTrustBody,
-  deleteTrustBody,
-} from "../../controllers/trustbody/trustBodyController.js";
+import { createTrustBody, deleteTrustBody, getAllTrustBodies, updateTrustBody } from "../../controllers/trustbody/trustBodycontroller.js";
+// import {
+//   createTrustBody,
+//   getAllTrustBodies,
+//   updateTrustBody,
+//   deleteTrustBody,
+// } from "../../controllers/trustbody/trustBodyController.js";
 
 const router = express.Router();
 
-/* ======================================================
-   ADMIN ROUTES
+// ======================================================
+//    ADMIN ROUTES
 
 // Create Trust Body
 router.post(
@@ -37,14 +38,14 @@ router.delete(
 );
 
 // Toggle Active / Inactive
-router.patch(
-  "/:id/status",
-  authMiddleware,
-  toggleTrustBodyStatus
-);
+// router.patch(
+//   "/:id/status",
+//   authMiddleware,
+//   toggleTrustBodyStatus
+// );
 
-/* ======================================================
-   PUBLIC ROUTES
+//======================================================
+//  PUBLIC ROUTES
 
 // Get all trust bodies (pagination + filter)
 router.get("/", getAllTrustBodies);

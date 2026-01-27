@@ -40,6 +40,8 @@ import bankRoutes from "./src/routes/add_by_admin/bankRoutes.js";
 import publishedRoutes from "./src/routes/add_by_admin/publishedRoutes.js";
 import recentUpdateRoutes from "./src/routes/recent-update/recentUpdateRoutes.js";
 import newsLetterRoutes from "./src/routes/newsletters/newsLetterroutes.js";
+import enquiryListRoutes from "./src/routes/enquiry_list/enquiryListRoutes.js";
+import supportRoutes from "./src/routes/support/supportRoutes.js";
 
 const app = express();
 
@@ -107,6 +109,8 @@ app.use("/api/v1/banks", bankRoutes);
 app.use("/api/v1/published", publishedRoutes);
 app.use("/api/v1/recent-updates", recentUpdateRoutes);
 app.use("/api/v1/newsletters", newsLetterRoutes);
+app.use("/api/v1/enquire-list", enquiryListRoutes);
+app.use("/api/v1/support", supportRoutes);
 
 app.get("/", (req, res) => res.send("Server Running"));
 
