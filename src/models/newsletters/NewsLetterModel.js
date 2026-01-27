@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import slugify from "slugify";
 
 const NewsLetterSchema = new mongoose.Schema(
   {
@@ -6,42 +7,51 @@ const NewsLetterSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-      maxlength: 200,
     },
 
     slug: {
       type: String,
-      required: true,
       unique: true,
+      index: true,
     },
 
     monthYear: {
-      type: String, // format: YYYY-MM (2025-01)
+      type: String,
       required: true,
     },
 
-    order: {
+    order_by: {
       type: Number,
-      required: true,
+      default: 0,
     },
 
     image: {
-      url: String,
-      public_id: String,
+      type: String,
+      required: true,
     },
 
     pdf: {
-      url: String,
-      public_id: String,
+      type: String,
+      required: true,
     },
 
     status: {
       type: String,
-      enum: ["active", "inactive"],
-      default: "active",
+      enum: ["Active", "Inactive"],
+      default: "Active",
     },
   },
   { timestamps: true }
 );
+
+/* ✅ SAFE PRE-SAVE HOOK (NO next) */
+NewsLetterSchema.pre("save", function () {
+  if (!this.slug) {
+    this.slug = slugify(`${this.title}-${this.monthYear}`, {
+      lower: true,
+      strict: true,
+    });
+  }
+});
 
 export default mongoose.model("NewsLetter", NewsLetterSchema);

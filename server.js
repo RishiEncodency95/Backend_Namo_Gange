@@ -10,7 +10,6 @@ import bannerRoutes from "./src/routes/home_banner/bannerRoutes.js";
 import galleryImageRoutes from "./src/routes/galleryImageRoutes.js";
 import galleryVideoRoutes from "./src/routes/galleryVideoRoutes.js";
 import trustbodyRoutes from "./src/routes/trustbodies/trustBodyroutes.js";
-import newsLetterRoutes from "./src/routes/newsletters/newsLetterroutes.js";
 import categoryImageRoutes from "./src/routes/add_by_admin/categoryImageRoutes.js";
 import categoryVideoRoutes from "./src/routes/add_by_admin/categoryVideoRoutes.js";
 import statusOptionRoutes from "./src/routes/add_by_admin/statusOptionRoutes.js";
@@ -39,6 +38,8 @@ import callTargetRoutes from "./src/routes/add_by_admin/callTargetRoutes.js";
 import coordinatorRoutes from "./src/routes/add_by_admin/coordinatorStatusRoutes.js";
 import bankRoutes from "./src/routes/add_by_admin/bankRoutes.js";
 import publishedRoutes from "./src/routes/add_by_admin/publishedRoutes.js";
+import recentUpdateRoutes from "./src/routes/recent-update/recentUpdateRoutes.js";
+import newsLetterRoutes from "./src/routes/newsletters/newsLetterroutes.js";
 
 const app = express();
 
@@ -76,7 +77,6 @@ app.use("/api/v1/banner", bannerRoutes);
 app.use("/api/v1/galleryImage", galleryImageRoutes);
 app.use("/api/v1/gallery-video", galleryVideoRoutes);
 app.use("/api/v1/trust-bodies", trustbodyRoutes);
-app.use("/api/v1/newsLetter", newsLetterRoutes);
 app.use("/api/v1/category-image", categoryImageRoutes);
 app.use("/api/v1/category-video", categoryVideoRoutes);
 app.use("/api/v1/status-option", statusOptionRoutes);
@@ -105,6 +105,8 @@ app.use("/api/v1/call-target", callTargetRoutes);
 app.use("/api/v1/coordinator-status", coordinatorRoutes);
 app.use("/api/v1/banks", bankRoutes);
 app.use("/api/v1/published", publishedRoutes);
+app.use("/api/v1/recent-updates", recentUpdateRoutes);
+app.use("/api/v1/newsletters", newsLetterRoutes);
 
 app.get("/", (req, res) => res.send("Server Running"));
 
