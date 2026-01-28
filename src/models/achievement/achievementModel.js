@@ -22,6 +22,15 @@ const achievementSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    link: {
+      type: String,
+      default: "",
+    },
+    status: {
+      type: String,
+      enum: ["Active", "Inactive"],
+      default: "Active",
+    },
     meta_tag: {
       type: String,
       default: "",

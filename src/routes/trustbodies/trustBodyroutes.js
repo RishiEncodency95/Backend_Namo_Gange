@@ -16,7 +16,7 @@ const router = express.Router();
 
 // Create Trust Body
 router.post(
-  "/",
+  "/create",
   upload.single("image"),
   authMiddleware,
   createTrustBody
