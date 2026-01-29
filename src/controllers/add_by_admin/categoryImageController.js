@@ -1,5 +1,6 @@
 import CategoryImage from "../../models/add_by_admin/CategoryImageModel.js";
 import cloudinary from "../../config/cloudinary.js";
+import slugify from "../../utils/slugify.js";
 
 // ✅ CREATE
 export const createCategoryImage = async (req, res) => {
@@ -16,8 +17,11 @@ export const createCategoryImage = async (req, res) => {
         })
         .end(req.file.buffer);
     });
+    const slug = slugify(req.body.title);
     const categoryImage = await CategoryImage.create({
       title: req.body.title,
+      slug, // 🔥 auto slug
+      slug: req.body.slug,
       category: req.body.category,
       order_by: req.body.order_by,
       status: req.body.status,
@@ -86,7 +90,12 @@ export const updateCategoryImage = async (req, res) => {
       fs.unlinkSync(req.file.path);
     }
 
-    categoryImage.title = req.body.title || categoryImage.title;
+    // categoryImage.title = req.body.title || categoryImage.title; 
+    // 🔥 title change → slug auto update
+    if (req.body.title && req.body.title !== categoryImage.title) {
+      categoryImage.slug = slugify(req.body.title);
+      categoryImage.title = req.body.title;
+    }
     categoryImage.category = req.body.category || categoryImage.category;
     categoryImage.order_by = req.body.order_by || categoryImage.order_by;
     categoryImage.status = req.body.status || categoryImage.status;

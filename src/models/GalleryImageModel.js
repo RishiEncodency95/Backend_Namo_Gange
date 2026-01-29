@@ -5,6 +5,12 @@ const GallerySchema = new mongoose.Schema(
     title: { type: String, required: true },
     image: { type: String, required: true }, // cloudinary URL
     category: { type: String, required: true },
+    slug: {
+      type: String,
+      unique: true,
+      lowercase: true,
+      index: true,
+    },
     date: { type: Date, required: true },
     location: { type: String, required: true },
     status: { type: String, enum: ["Active", "Inactive"], default: "Active" },

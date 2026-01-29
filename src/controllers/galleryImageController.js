@@ -1,6 +1,7 @@
 import GalleryImage from "../models/GalleryImageModel.js";
 import cloudinary from "../config/cloudinary.js";
 import fs from "fs";
+import slugify from "../utils/slugify.js";
 
 // ---------------- CREATE ----------------
 export const createGallery = async (req, res) => {
@@ -17,9 +18,11 @@ export const createGallery = async (req, res) => {
         })
         .end(req.file.buffer);
     });
+    const slug = slugify(req.body.category);
     const galleryImage = await GalleryImage.create({
       title: req.body.title,
       category: req.body.category,
+      slug: slug,
       date: req.body.date,
       location: req.body.location,
       status: req.body.status,
@@ -85,7 +88,11 @@ export const updateGallery = async (req, res) => {
     }
 
     gallery.title = req.body.title || gallery.title;
-    gallery.category = req.body.category || gallery.category;
+    // gallery.category = req.body.category || gallery.category;
+    if (req.body.category && req.body.category !== categoryImage.category) {
+      categoryImage.slug = slugify(req.body.category);
+      categoryImage.category = req.body.category;
+    }
     gallery.date = req.body.date || gallery.date;
     gallery.location = req.body.location || gallery.location;
     gallery.status = req.body.status || gallery.status;
