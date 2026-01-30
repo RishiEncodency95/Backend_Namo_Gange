@@ -10,7 +10,7 @@ import authMiddleware from "../../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
-router.post("/create", authMiddleware, createEnquiryList);
+router.post("/create", createEnquiryList);
 router.get("/", getAllEnquiryLists);
 router.get("/:id", getEnquiryListById);
 router.put("/:id", authMiddleware, updateEnquiryList);
