@@ -10,6 +10,7 @@ export const createInitiative = async (req, res) => {
       link,
       slug,
       desc,
+      objective_catagory,
       status,
       meta_keywords,
       meta_desc,
@@ -48,6 +49,7 @@ export const createInitiative = async (req, res) => {
       desc,
       link,
       image: uploadResult.secure_url, // ✅ URL save
+      objective_catagory,
       status,
       meta_keywords,
       meta_desc,
@@ -142,6 +144,7 @@ export const updateInitiative = async (req, res) => {
     data.slug = req.body.slug || data.slug;
     data.desc = req.body.desc || data.desc;
     data.link = req.body.link ?? data.link;
+    data.objective_catagory = req.body.objective_catagory || data.objective_catagory;
     data.status = req.body.status || data.status;
     data.meta_keywords = req.body.meta_keywords ?? data.meta_keywords;
     data.meta_desc = req.body.meta_desc ?? data.meta_desc;

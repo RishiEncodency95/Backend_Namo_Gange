@@ -26,6 +26,10 @@ const initiativeSchema = new mongoose.Schema(
       type: String, // cloudinary URL
       required: true,
     },
+    objective_catagory: {
+      type: String,
+      required: false,
+    },
     status: {
       type: String,
       enum: ["Active", "Inactive"],

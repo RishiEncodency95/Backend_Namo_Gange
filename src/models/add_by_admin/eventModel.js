@@ -8,11 +8,14 @@ const eventSchema = new mongoose.Schema(
       trim: true,
     },
 
-    date: {
+    start_date: {
       type: Date,
       required: true,
     },
-
+    end_date: {
+      type: Date,
+      required: true,
+    },
     reporting_point: {
       type: String,
       trim: true,
@@ -47,7 +50,10 @@ const eventSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
-
+    image: {
+      type: String,
+      default: "",
+    },
     status: {
       type: String,
       enum: ["Active", "Inactive"],

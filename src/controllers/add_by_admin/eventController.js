@@ -1,5 +1,16 @@
+import cloudinary from "../../config/cloudinary.js";
 import Event from "../../models/add_by_admin/eventModel.js";
 
+/* ================= CLOUDINARY HELPER ================= */
+const uploadToCloudinary = (buffer) =>
+  new Promise((resolve, reject) => {
+    cloudinary.uploader
+      .upload_stream({ folder: "events" }, (error, result) => {
+        if (error) reject(error);
+        else resolve(result);
+      })
+      .end(buffer);
+  });
 /* ===============================
    CREATE EVENT
 ================================ */
@@ -7,7 +18,9 @@ export const createEvent = async (req, res) => {
   try {
     const {
       name,
-      date,
+      start_date,
+      end_date,
+      image,
       reporting_point,
       coordinator_contact,
       reporting_time,
@@ -19,16 +32,20 @@ export const createEvent = async (req, res) => {
       updated_by,
     } = req.body;
 
-    if (!name || !date || !created_by) {
+    if (!name || !start_date || !end_date || !created_by) {
       return res.status(400).json({
         success: false,
-        message: "name, date and created_by are required",
+        message: "name, start_date, end_date and created_by are required",
       });
     }
 
+    const uploadResult = await uploadToCloudinary(req.file.buffer);
+
     const data = await Event.create({
       name,
-      date,
+      start_date,
+      end_date,
+      image: uploadResult.secure_url,
       reporting_point,
       coordinator_contact,
       reporting_time,
@@ -113,7 +130,13 @@ export const updateEvent = async (req, res) => {
     }
 
     data.name = req.body.name ?? data.name;
-    data.date = req.body.date ?? data.date;
+    data.start_date = req.body.start_date ?? data.start_date;
+    data.end_date = req.body.end_date ?? data.end_date;
+    if (req.file) {
+      const uploadResult = await uploadToCloudinary(req.file.buffer);
+      data.image = uploadResult.secure_url;
+    }
+    data.image = req.body.image ?? data.image;
     data.reporting_point = req.body.reporting_point ?? data.reporting_point;
     data.coordinator_contact =
       req.body.coordinator_contact ?? data.coordinator_contact;
@@ -144,7 +167,7 @@ export const updateEvent = async (req, res) => {
 ================================ */
 export const deleteEvent = async (req, res) => {
   try {
-    const data = await Event.findByIdAndDelete(req.params.id);
+    const data = await Event.findById(req.params.id);
 
     if (!data) {
       return res.status(404).json({
@@ -152,6 +175,9 @@ export const deleteEvent = async (req, res) => {
         message: "Event not found",
       });
     }
+    const publicId = data.image.split("/").pop().split(".")[0];
+    await cloudinary.uploader.destroy(`events/${publicId}`);
+    await data.deleteOne();
 
     res.status(200).json({
       success: true,
