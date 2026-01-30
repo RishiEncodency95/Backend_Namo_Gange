@@ -11,10 +11,26 @@ import authMiddleware from "../../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
-router.post("/create", upload.single("image"), authMiddleware, createObjective);
+router.post(
+  "/create",
+  upload.fields([
+    { name: "image", maxCount: 1 },
+    { name: "logo", maxCount: 1 },
+  ]),
+  authMiddleware,
+  createObjective
+);
 router.get("/", getAllObjectives);
 router.get("/:id", getObjectiveById);
-router.put("/:id", upload.single("image"), authMiddleware, updateObjective);
+router.put(
+  "/:id",
+  upload.fields([
+    { name: "image", maxCount: 1 },
+    { name: "logo", maxCount: 1 },
+  ]),
+  authMiddleware,
+  updateObjective
+);
 router.delete("/:id", authMiddleware, deleteObjective);
 
 export default router;

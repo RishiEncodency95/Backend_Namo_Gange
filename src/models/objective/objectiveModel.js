@@ -22,6 +22,10 @@ const objectiveSchema = new mongoose.Schema(
       type: String, // cloudinary URL
       required: true,
     },
+    logo: {
+      type: String, // cloudinary URL
+      required: true,
+    },
     status: {
       type: String,
       enum: ["Active", "Inactive"],

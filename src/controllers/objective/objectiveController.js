@@ -25,10 +25,10 @@ export const createObjective = async (req, res) => {
       });
     }
 
-    if (!req.file) {
+    if (!req.files || !req.files.image || !req.files.logo) {
       return res.status(400).json({
         success: false,
-        message: "image is required",
+        message: "Both image and logo are required",
       });
     }
 
@@ -40,13 +40,15 @@ export const createObjective = async (req, res) => {
       });
     }
 
-    const uploadResult = await uploadToCloudinary(req.file.buffer);
+    const imageUploadResult = await uploadToCloudinary(req.files.image[0].buffer);
+    const logoUploadResult = await uploadToCloudinary(req.files.logo[0].buffer);
 
     const data = await Objective.create({
       title,
       slug,
       desc,
-      image: uploadResult.secure_url,
+      image: imageUploadResult.secure_url,
+      logo: logoUploadResult.secure_url,
       status,
       meta_keywords,
       meta_desc,
@@ -99,10 +101,16 @@ export const updateObjective = async (req, res) => {
     }
 
     let imageUrl = data.image;
+    let logoUrl = data.logo;
 
-    if (req.file) {
-      const uploadResult = await uploadToCloudinary(req.file.buffer);
+    if (req.files && req.files.image) {
+      const uploadResult = await uploadToCloudinary(req.files.image[0].buffer);
       imageUrl = uploadResult.secure_url;
+    }
+
+    if (req.files && req.files.logo) {
+      const uploadResult = await uploadToCloudinary(req.files.logo[0].buffer);
+      logoUrl = uploadResult.secure_url;
     }
 
     data.title = req.body.title || data.title;
@@ -112,6 +120,7 @@ export const updateObjective = async (req, res) => {
     data.meta_keywords = req.body.meta_keywords ?? data.meta_keywords;
     data.meta_desc = req.body.meta_desc ?? data.meta_desc;
     data.image = imageUrl;
+    data.logo = logoUrl;
     data.updated_by = req.body.updated_by || data.updated_by;
 
     await data.save();
