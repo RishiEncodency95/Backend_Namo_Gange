@@ -1,30 +1,24 @@
 import User from "../../models/user/User.js";
 import bcrypt from "bcryptjs";
 
-
 export const createUser = async (req, res) => {
   try {
-    console.log("REQ BODY:", req.body);
+    const { password, email, username, ...rest } = req.body;
 
-    const { password, confirm_password, email, username, ...rest } = req.body;
-
-    if (!email || !username) {
+    if (!email || !username || !password) {
       return res.status(400).json({
-        message: "Email and Username are required",
+        success: false,
+        message: "Email, Username and Password are required",
       });
-    }
-
-    if (password !== confirm_password) {
-      return res.status(400).json({ message: "Password mismatch" });
     }
 
     const existUser = await User.findOne({
       $or: [{ email: email.trim() }, { username: username.trim() }],
-      status: "Active",
     });
 
     if (existUser) {
       return res.status(409).json({
+        success: false,
         message: "Email or Username already exists",
       });
     }
@@ -36,7 +30,8 @@ export const createUser = async (req, res) => {
       email: email.trim(),
       username: username.trim(),
       password: hashPassword,
-      created_by: req.userId || null,
+      created_by: req.userId || rest.created_by || null,
+      updated_by: req.userId || rest.updated_by || null,
     });
 
     res.status(201).json({ success: true, data: user });
@@ -46,9 +41,10 @@ export const createUser = async (req, res) => {
   }
 };
 
+
 export const getUsers = async (req, res) => {
   try {
-    const users = await User.find({ status: "Active" }).select("-password");
+    const users = await User.find().select("-password");
     res.json({ success: true, data: users });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
@@ -59,7 +55,6 @@ export const getUserById = async (req, res) => {
   try {
     const user = await User.findOne({
       _id: req.params.id,
-      status: "Active",
     }).select("-password");
 
     if (!user) {
@@ -76,21 +71,22 @@ export const updateUser = async (req, res) => {
   try {
     const updateData = { ...req.body };
 
-    // ✅ password secure update
     if (updateData.password) {
       updateData.password = await bcrypt.hash(updateData.password, 10);
+    } else {
+      delete updateData.password;
     }
 
-    updateData.updated_by = req.userId || null;
+    updateData.updated_by = req.userId || updateData.updated_by || null;
 
     const updated = await User.findOneAndUpdate(
-      { _id: req.params.id, status: "Active" },
+      { _id: req.params.id },
       updateData,
       { new: true }
     ).select("-password");
 
     if (!updated) {
-      return res.status(404).json({ message: "User not found or inactive" });
+      return res.status(404).json({ message: "User not found" });
     }
 
     res.json({ success: true, data: updated });
@@ -99,10 +95,10 @@ export const updateUser = async (req, res) => {
   }
 };
 
+
 export const deleteUser = async (req, res) => {
   try {
     await User.findByIdAndUpdate(req.params.id, {
-      status: "Inactive",
       updated_by: req.userId || null,
     });
 
