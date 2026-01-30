@@ -98,9 +98,7 @@ export const updateUser = async (req, res) => {
 
 export const deleteUser = async (req, res) => {
   try {
-    await User.findByIdAndUpdate(req.params.id, {
-      updated_by: req.userId || null,
-    });
+    await User.findByIdAndDelete(req.params.id);
 
     res.json({ success: true, message: "User deleted successfully" });
   } catch (err) {
