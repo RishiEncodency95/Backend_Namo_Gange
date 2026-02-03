@@ -42,6 +42,9 @@ import recentUpdateRoutes from "./src/routes/recent-update/recentUpdateRoutes.js
 import newsLetterRoutes from "./src/routes/newsletters/newsLetterroutes.js";
 import enquiryListRoutes from "./src/routes/enquiry_list/enquiryListRoutes.js";
 import supportRoutes from "./src/routes/support/supportRoutes.js";
+import ipRoutes from "./src/routes/add_by_admin/ipRoutes.js";
+import roleRoutes from "./src/routes/add_by_admin/roleRoutes.js";
+import sidebarRoutes from "./src/routes/add_by_admin/sidebarRoutes.js";
 
 const app = express();
 
@@ -111,6 +114,9 @@ app.use("/api/v1/recent-updates", recentUpdateRoutes);
 app.use("/api/v1/newsletters", newsLetterRoutes);
 app.use("/api/v1/enquire-list", enquiryListRoutes);
 app.use("/api/v1/support", supportRoutes);
+app.use("/api/v1/ip", ipRoutes);
+app.use("/api/v1/role", roleRoutes);
+app.use("/api/v1/sidebar", sidebarRoutes);
 
 app.get("/", (req, res) => res.send("Server Running"));
 
