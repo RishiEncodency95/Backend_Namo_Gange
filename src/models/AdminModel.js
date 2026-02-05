@@ -16,8 +16,8 @@ const AdminSchema = new Schema(
     },
     role: {
       type: String,
-      enum: ["superadmin", "admin", "moderator"],
-      default: "admin",
+      // enum: ["superadmin", "admin", "moderator"],
+      default: "Admin",
     },
     status: {
       type: String,
