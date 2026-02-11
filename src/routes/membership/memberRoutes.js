@@ -10,10 +10,10 @@ import {
 
 const router = express.Router();
 
-router.post("/create", upload.single("profilePic"), createMember);
+router.post("/create", upload.single("profile_image"), createMember);
 router.get("/", getAllMembers);
 router.get("/:id", getMemberById);
-router.put("/:id", upload.single("profilePic"), updateMember);
+router.put("/:id", upload.single("profile_image"), updateMember);
 router.delete("/:id", deleteMember);
 
 export default router;

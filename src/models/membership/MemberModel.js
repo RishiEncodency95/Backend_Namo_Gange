@@ -26,6 +26,7 @@ const MemberSchema = new mongoose.Schema(
     state: { type: String, required: true },
     city: { type: String, required: true },
     pinCode: { type: String, required: true },
+    bloodGroup: { type: String },
 
     /* ================= Emergency ================= */
     relation: { type: String, required: true },
