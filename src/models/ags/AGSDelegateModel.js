@@ -32,7 +32,11 @@ const AGSDelegateSchema = new mongoose.Schema(
     leadForward: { type: String },
     // source: { type: String },
     mode: { type: String },
-    status: { type: String },
+    status: {
+      type: String,
+      enum: ["Active", "Inactive"],
+      default: "Active",
+    },
     coordinator: { type: String },
     remark: { type: String },
 
