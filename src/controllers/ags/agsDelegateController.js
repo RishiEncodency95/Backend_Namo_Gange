@@ -26,9 +26,9 @@ export const createAGSDelegate = async (req, res) => {
             college: req.body.college,
             university: req.body.university,
 
-            enquiryFor: req.body.enquiryFor,
+            // enquiryFor: req.body.enquiryFor,
             leadForward: req.body.leadForward,
-            source: req.body.source,
+            // source: req.body.source,
             mode: req.body.mode,
             status: req.body.status,
             coordinator: req.body.coordinator,

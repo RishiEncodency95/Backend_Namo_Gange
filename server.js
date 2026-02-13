@@ -48,6 +48,7 @@ import sidebarRoutes from "./src/routes/add_by_admin/sidebarRoutes.js";
 import roleRightsRoutes from "./src/routes/role_rights/roleRightsRoutes.js";
 import volunteerRoutes from "./src/routes/volunteer/volunteerRoutes.js";
 import agsRouters from "./src/routes/ags/agsDelegateRoutes.js"; 
+import agsEventRoutes from "./src/routes/add_by_admin/agsEventRoutes.js";
 
 const app = express();
 
@@ -123,6 +124,7 @@ app.use("/api/v1/sidebar", sidebarRoutes);
 app.use("/api/v1/role-rights", roleRightsRoutes);
 app.use("/api/v1/volunteers", volunteerRoutes);
 app.use("/api/v1/ags-delegates", agsRouters);
+app.use("/api/v1/ags-events", agsEventRoutes);
 
 app.get("/", (req, res) => res.send("Server Running"));
 

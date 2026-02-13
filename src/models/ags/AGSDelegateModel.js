@@ -28,9 +28,9 @@ const AGSDelegateSchema = new mongoose.Schema(
     university: { type: String },
 
     /* ========== LEAD INFO ========== */
-    enquiryFor: { type: String },
+    // enquiryFor: { type: String },
     leadForward: { type: String },
-    source: { type: String },
+    // source: { type: String },
     mode: { type: String },
     status: { type: String },
     coordinator: { type: String },
