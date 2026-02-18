@@ -49,6 +49,9 @@ import roleRightsRoutes from "./src/routes/role_rights/roleRightsRoutes.js";
 import volunteerRoutes from "./src/routes/volunteer/volunteerRoutes.js";
 import agsRouters from "./src/routes/ags/agsDelegateRoutes.js"; 
 import agsEventRoutes from "./src/routes/add_by_admin/agsEventRoutes.js";
+import collegeRoutes from "./src/routes/college/collegeRoutes.js";
+import clientStatusRoutes from "./src/routes/clientStatus/clientStatus.routes.js";
+import agsPaymentRoutes from "./src/routes/ags/agsPayment.routes.js";
 
 const app = express();
 
@@ -125,6 +128,10 @@ app.use("/api/v1/role-rights", roleRightsRoutes);
 app.use("/api/v1/volunteers", volunteerRoutes);
 app.use("/api/v1/ags-delegates", agsRouters);
 app.use("/api/v1/ags-events", agsEventRoutes);
+app.use("/api/v1/colleges", collegeRoutes);
+app.use("/api/v1/client-status", clientStatusRoutes);
+app.use("/api/v1/ags-payment", agsPaymentRoutes);
+
 
 app.get("/", (req, res) => res.send("Server Running"));
 

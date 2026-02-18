@@ -26,7 +26,7 @@ export const createAGSDelegate = async (req, res) => {
             college: req.body.college,
             university: req.body.university,
 
-            // enquiryFor: req.body.enquiryFor,
+            enquiryFor: req.body.enquiryFor,
             leadForward: req.body.leadForward,
             // source: req.body.source,
             mode: req.body.mode,
@@ -36,10 +36,12 @@ export const createAGSDelegate = async (req, res) => {
 
             companyName: req.body.companyName,
             companyAddress: req.body.companyAddress,
-            companyCountry: req.body.country1,
-            companyState: req.body.state1,
-            companyCity: req.body.city1,
-            companyPin: req.body.pin1
+            companyCountry: req.body.companyCountry,
+            companyState: req.body.companyState,
+            companyCity: req.body.companyCity,
+            companyPin: req.body.companyPin,
+            clientStatus: req.body.clientStatus,
+            updatedStatusBy: req.body.updatedStatusBy,
         });
         res.status(201).json({ success: true, data: delegate });
     } catch (error) {
