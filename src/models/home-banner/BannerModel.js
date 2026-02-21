@@ -4,6 +4,7 @@ const BannerSchema = new mongoose.Schema(
   {
     title: { type: String, required: true, trim: true },
     image: { type: String, required: true }, // cloudinary URL
+    alt_text: { type: String, default: "Home Banner" },
     link: { type: String, required: true, trim: true },
     status: {
       type: String,
@@ -27,7 +28,7 @@ const BannerSchema = new mongoose.Schema(
       trim: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export default mongoose.model("Banner", BannerSchema);

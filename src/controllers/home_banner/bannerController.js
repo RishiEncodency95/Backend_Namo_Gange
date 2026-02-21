@@ -15,7 +15,7 @@ const uploadToCloudinary = (buffer) =>
 /* ================= CREATE BANNER ================= */
 export const createBanner = async (req, res) => {
   try {
-    const { title, link, status, created_by, schedule } = req.body;
+    const { title, link, status, created_by, schedule, alt_text } = req.body;
 
     if (!title || !link || !created_by) {
       return res.status(400).json({
@@ -44,6 +44,7 @@ export const createBanner = async (req, res) => {
       title,
       link,
       image: uploadResult.secure_url,
+      alt_text: alt_text || "Home Banner",
       status: status || "Active",
       created_by,
       schedule: parsedSchedule,
@@ -126,6 +127,7 @@ export const updateBanner = async (req, res) => {
     banner.link = req.body.link || banner.link;
     banner.status = req.body.status || banner.status;
     banner.updated_by = req.body.updated_by || banner.updated_by;
+    banner.alt_text = req.body.alt_text || banner.alt_text;
     banner.image = imageUrl;
     if (req.body.schedule) {
       try {
@@ -170,6 +172,7 @@ export const deleteBanner = async (req, res) => {
     res.status(200).json({
       success: true,
       message: "Banner deleted successfully",
+      data: banner,
     });
   } catch (error) {
     res.status(500).json({

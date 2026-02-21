@@ -47,11 +47,12 @@ import roleRoutes from "./src/routes/add_by_admin/roleRoutes.js";
 import sidebarRoutes from "./src/routes/add_by_admin/sidebarRoutes.js";
 import roleRightsRoutes from "./src/routes/role_rights/roleRightsRoutes.js";
 import volunteerRoutes from "./src/routes/volunteer/volunteerRoutes.js";
-import agsRouters from "./src/routes/ags/agsDelegateRoutes.js"; 
+import agsRouters from "./src/routes/ags/agsDelegateRoutes.js";
 import agsEventRoutes from "./src/routes/add_by_admin/agsEventRoutes.js";
 import collegeRoutes from "./src/routes/college/collegeRoutes.js";
 import clientStatusRoutes from "./src/routes/clientStatus/clientStatus.routes.js";
 import agsPaymentRoutes from "./src/routes/ags/agsPayment.routes.js";
+import seoRoutes from "./src/routes/seo/seo.routes.js";
 
 const app = express();
 
@@ -73,7 +74,7 @@ app.use(
       }
     },
     credentials: true,
-  })
+  }),
 );
 
 app.use(express.json());
@@ -131,7 +132,7 @@ app.use("/api/v1/ags-events", agsEventRoutes);
 app.use("/api/v1/colleges", collegeRoutes);
 app.use("/api/v1/client-status", clientStatusRoutes);
 app.use("/api/v1/ags-payment", agsPaymentRoutes);
-
+app.use("/api/v1/seo", seoRoutes);
 
 app.get("/", (req, res) => res.send("Server Running"));
 

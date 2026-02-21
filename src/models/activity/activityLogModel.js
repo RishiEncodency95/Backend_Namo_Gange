@@ -12,6 +12,10 @@ const activityLogSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    data: {
+      type: mongoose.Schema.Types.Mixed, // flexible data storage
+      default: {},
+    },
     link: {
       type: String,
       default: "",
