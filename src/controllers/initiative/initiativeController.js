@@ -1,5 +1,24 @@
 import Initiative from "../../models/initiative/initiativeModel.js";
 import cloudinary from "../../config/cloudinary.js";
+
+/* ===============================
+   HELPERS
+================================ */
+const uploadToCloudinary = (buffer) =>
+  new Promise((resolve, reject) => {
+    cloudinary.uploader
+      .upload_stream({ folder: "initiatives" }, (error, result) => {
+        if (error) reject(error);
+        else resolve(result);
+      })
+      .end(buffer);
+  });
+
+const deleteFromCloudinary = async (url) => {
+  if (!url) return;
+  const publicId = url.split("/").pop().split(".")[0];
+  await cloudinary.uploader.destroy(`initiatives/${publicId}`);
+};
 /* ===============================
    CREATE INITIATIVE
 ================================ */
@@ -15,6 +34,7 @@ export const createInitiative = async (req, res) => {
       meta_keywords,
       meta_desc,
       created_by,
+      image_alt,
     } = req.body;
 
     // ✅ image FILE req.file me aayegi
@@ -34,14 +54,7 @@ export const createInitiative = async (req, res) => {
     }
 
     // ✅ Upload image to Cloudinary
-    const uploadResult = await new Promise((resolve, reject) => {
-      cloudinary.uploader
-        .upload_stream({ folder: "initiatives" }, (error, result) => {
-          if (error) reject(error);
-          else resolve(result);
-        })
-        .end(req.file.buffer);
-    });
+    const uploadResult = await uploadToCloudinary(req.file.buffer);
 
     const data = await Initiative.create({
       title,
@@ -49,6 +62,7 @@ export const createInitiative = async (req, res) => {
       desc,
       link,
       image: uploadResult.secure_url, // ✅ URL save
+      image_alt,
       objective_catagory,
       status,
       meta_keywords,
@@ -127,35 +141,41 @@ export const updateInitiative = async (req, res) => {
       });
     }
 
-    if (req.file) {
-      const uploadResult = await new Promise((resolve, reject) => {
-        cloudinary.uploader
-          .upload_stream({ folder: "initiatives" }, (error, result) => {
-            if (error) reject(error);
-            else resolve(result);
-          })
-          .end(req.file.buffer);
-      });
+    if (req.body.slug && req.body.slug !== data.slug) {
+      const existingSlug = await Initiative.findOne({ slug: req.body.slug });
+      if (existingSlug) {
+        return res
+          .status(409)
+          .json({ success: false, message: "Slug already exists" });
+      }
+    }
 
-      data.image = uploadResult.secure_url;
+    let imageUrl = data.image;
+    if (req.file) {
+      await deleteFromCloudinary(data.image);
+      const uploadResult = await uploadToCloudinary(req.file.buffer);
+      imageUrl = uploadResult.secure_url;
     }
 
     data.title = req.body.title || data.title;
     data.slug = req.body.slug || data.slug;
     data.desc = req.body.desc || data.desc;
     data.link = req.body.link ?? data.link;
-    data.objective_catagory = req.body.objective_catagory || data.objective_catagory;
+    data.image = imageUrl;
+    data.image_alt = req.body.image_alt ?? data.image_alt;
+    data.objective_catagory =
+      req.body.objective_catagory || data.objective_catagory;
     data.status = req.body.status || data.status;
     data.meta_keywords = req.body.meta_keywords ?? data.meta_keywords;
     data.meta_desc = req.body.meta_desc ?? data.meta_desc;
     data.updated_by = req.body.updated_by || data.updated_by;
 
-    await data.save();
+    const updatedData = await data.save();
 
     res.status(200).json({
       success: true,
       message: "Initiative updated successfully",
-      data,
+      data: updatedData,
     });
   } catch (error) {
     res.status(500).json({
@@ -170,7 +190,7 @@ export const updateInitiative = async (req, res) => {
 ================================ */
 export const deleteInitiative = async (req, res) => {
   try {
-    const data = await Initiative.findByIdAndDelete(req.params.id);
+    const data = await Initiative.findById(req.params.id);
 
     if (!data) {
       return res.status(404).json({
@@ -179,9 +199,13 @@ export const deleteInitiative = async (req, res) => {
       });
     }
 
+    await deleteFromCloudinary(data.image);
+    await data.deleteOne();
+
     res.status(200).json({
       success: true,
       message: "Initiative deleted successfully",
+      data,
     });
   } catch (error) {
     res.status(500).json({

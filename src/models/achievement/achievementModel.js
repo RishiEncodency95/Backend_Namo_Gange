@@ -18,6 +18,9 @@ const achievementSchema = new mongoose.Schema(
       type: String, // cloudinary URL
       required: true,
     },
+    image_alt: {
+      type: String,
+    },
     desc: {
       type: String,
       required: true,
@@ -50,7 +53,7 @@ const achievementSchema = new mongoose.Schema(
       trim: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export default mongoose.model("Achievement", achievementSchema);

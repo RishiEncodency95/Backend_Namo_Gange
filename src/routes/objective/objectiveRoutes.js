@@ -13,12 +13,12 @@ const router = express.Router();
 
 router.post(
   "/create",
+  authMiddleware,
   upload.fields([
     { name: "image", maxCount: 1 },
     { name: "logo", maxCount: 1 },
   ]),
-  authMiddleware,
-  createObjective
+  createObjective,
 );
 router.get("/", getAllObjectives);
 router.get("/:id", getObjectiveById);
@@ -29,7 +29,7 @@ router.put(
     { name: "logo", maxCount: 1 },
   ]),
   authMiddleware,
-  updateObjective
+  updateObjective,
 );
 router.delete("/:id", authMiddleware, deleteObjective);
 

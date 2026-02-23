@@ -22,9 +22,15 @@ const objectiveSchema = new mongoose.Schema(
       type: String, // cloudinary URL
       required: true,
     },
+    image_alt: {
+      type: String,
+    },
     logo: {
       type: String, // cloudinary URL
       required: true,
+    },
+    logo_alt: {
+      type: String,
     },
     status: {
       type: String,
@@ -50,7 +56,7 @@ const objectiveSchema = new mongoose.Schema(
       trim: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export default mongoose.model("Objective", objectiveSchema);

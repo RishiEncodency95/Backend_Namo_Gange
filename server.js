@@ -53,6 +53,8 @@ import collegeRoutes from "./src/routes/college/collegeRoutes.js";
 import clientStatusRoutes from "./src/routes/clientStatus/clientStatus.routes.js";
 import agsPaymentRoutes from "./src/routes/ags/agsPayment.routes.js";
 import seoRoutes from "./src/routes/seo/seo.routes.js";
+import heroRoutes from "./src/routes/hero/heroRoutes.js";
+import aboutRoutes from "./src/routes/about_us/aboutRoutes.js";
 
 const app = express();
 
@@ -64,19 +66,33 @@ const allowedOrigins = ["http://localhost:3000", "http://localhost:5173"];
 //   "http://localhost:5173",
 // ];
 
+// app.use(
+//   cors({
+//     origin: function (origin, callback) {
+//       if (!origin || allowedOrigins.includes(origin)) {
+//         callback(null, true);
+//       } else {
+//         callback(new Error("Not allowed by CORS"));
+//       }
+//     },
+//     credentials: true,
+//   }),
+// );
 app.use(
   cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.some((o) => origin.startsWith(o))) {
         callback(null, true);
       } else {
-        callback(new Error("Not allowed by CORS"));
+        callback(null, false);
       }
     },
     credentials: true,
   }),
 );
-
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -133,6 +149,8 @@ app.use("/api/v1/colleges", collegeRoutes);
 app.use("/api/v1/client-status", clientStatusRoutes);
 app.use("/api/v1/ags-payment", agsPaymentRoutes);
 app.use("/api/v1/seo", seoRoutes);
+app.use("/api/v1/heroes", heroRoutes);
+app.use("/api/v1/about-us", aboutRoutes);
 
 app.get("/", (req, res) => res.send("Server Running"));
 

@@ -1,11 +1,16 @@
 import mongoose from "mongoose";
 
-const testimonialSchema = new mongoose.Schema(
+const aboutSchema = new mongoose.Schema(
   {
-    name: {
+    title: {
       type: String,
       required: true,
       trim: true,
+    },
+
+    desc: {
+      type: String,
+      required: true,
     },
     image: {
       type: String, // cloudinary URL
@@ -14,9 +19,8 @@ const testimonialSchema = new mongoose.Schema(
     image_alt: {
       type: String,
     },
-    desc: {
+    link: {
       type: String,
-      required: true,
     },
     status: {
       type: String,
@@ -37,4 +41,4 @@ const testimonialSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-export default mongoose.model("Testimonial", testimonialSchema);
+export default mongoose.model("About", aboutSchema);

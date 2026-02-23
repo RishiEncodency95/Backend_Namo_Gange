@@ -7,13 +7,19 @@ import {
   updateAchievement,
   deleteAchievement,
 } from "../../controllers/achievement/achievementController.js";
+import authMiddleware from "../../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
-router.post("/create", upload.single("image"), createAchievement);
+router.post(
+  "/create",
+  upload.single("image"),
+  authMiddleware,
+  createAchievement,
+);
 router.get("/", getAllAchievements);
 router.get("/:id", getAchievementById);
-router.put("/:id", upload.single("image"), updateAchievement);
-router.delete("/:id", deleteAchievement);
+router.put("/:id", upload.single("image"), authMiddleware, updateAchievement);
+router.delete("/:id", authMiddleware, deleteAchievement);
 
 export default router;

@@ -2,11 +2,39 @@ import Achievement from "../../models/achievement/achievementModel.js";
 import cloudinary from "../../config/cloudinary.js";
 
 /* ===============================
+   HELPERS
+================================ */
+const uploadToCloudinary = (buffer) =>
+  new Promise((resolve, reject) => {
+    cloudinary.uploader
+      .upload_stream({ folder: "achievements" }, (error, result) => {
+        if (error) reject(error);
+        else resolve(result);
+      })
+      .end(buffer);
+  });
+
+const deleteFromCloudinary = async (url) => {
+  if (!url) return;
+  const publicId = url.split("/").pop().split(".")[0];
+  await cloudinary.uploader.destroy(`achievements/${publicId}`);
+};
+/* ===============================
    CREATE ACHIEVEMENT
 ================================ */
 export const createAchievement = async (req, res) => {
   try {
-    const { title, slug, desc, meta_tag, meta_desc, created_by } = req.body;
+    const {
+      title,
+      slug,
+      desc,
+      link,
+      image_alt,
+      meta_tag,
+      status,
+      meta_desc,
+      created_by,
+    } = req.body;
 
     if (!title || !slug || !desc || !created_by || !req.file) {
       return res.status(400).json({
@@ -24,22 +52,18 @@ export const createAchievement = async (req, res) => {
     }
 
     // upload image to cloudinary
-    const uploadResult = await new Promise((resolve, reject) => {
-      cloudinary.uploader
-        .upload_stream({ folder: "achievements" }, (error, result) => {
-          if (error) reject(error);
-          else resolve(result);
-        })
-        .end(req.file.buffer);
-    });
+    const uploadResult = await uploadToCloudinary(req.file.buffer);
 
     const data = await Achievement.create({
       title,
       slug,
       desc,
+      link,
       image: uploadResult.secure_url,
+      image_alt,
       meta_tag,
       meta_desc,
+      status,
       created_by,
     });
 
@@ -101,32 +125,39 @@ export const updateAchievement = async (req, res) => {
       });
     }
 
-    if (req.file) {
-      const uploadResult = await new Promise((resolve, reject) => {
-        cloudinary.uploader
-          .upload_stream({ folder: "achievements" }, (error, result) => {
-            if (error) reject(error);
-            else resolve(result);
-          })
-          .end(req.file.buffer);
-      });
+    if (req.body.slug && req.body.slug !== data.slug) {
+      const existingSlug = await Achievement.findOne({ slug: req.body.slug });
+      if (existingSlug) {
+        return res
+          .status(409)
+          .json({ success: false, message: "Slug already exists" });
+      }
+    }
 
-      data.image = uploadResult.secure_url;
+    let imageUrl = data.image;
+    if (req.file) {
+      await deleteFromCloudinary(data.image);
+      const uploadResult = await uploadToCloudinary(req.file.buffer);
+      imageUrl = uploadResult.secure_url;
     }
 
     data.title = req.body.title || data.title;
     data.slug = req.body.slug || data.slug;
     data.desc = req.body.desc || data.desc;
+    data.link = req.body.link ?? data.link;
+    data.image = imageUrl;
+    data.image_alt = req.body.image_alt ?? data.image_alt;
     data.meta_tag = req.body.meta_tag ?? data.meta_tag;
     data.meta_desc = req.body.meta_desc ?? data.meta_desc;
+    data.status = req.body.status || data.status;
     data.updated_by = req.body.updated_by || data.updated_by;
 
-    await data.save();
+    const updatedData = await data.save();
 
     res.status(200).json({
       success: true,
       message: "Achievement updated successfully",
-      data,
+      data: updatedData,
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -138,7 +169,7 @@ export const updateAchievement = async (req, res) => {
 ================================ */
 export const deleteAchievement = async (req, res) => {
   try {
-    const data = await Achievement.findByIdAndDelete(req.params.id);
+    const data = await Achievement.findById(req.params.id);
 
     if (!data) {
       return res.status(404).json({
@@ -147,9 +178,13 @@ export const deleteAchievement = async (req, res) => {
       });
     }
 
+    await deleteFromCloudinary(data.image);
+    await data.deleteOne();
+
     res.status(200).json({
       success: true,
       message: "Achievement deleted successfully",
+      data,
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

@@ -12,11 +12,22 @@ const uploadToCloudinary = (buffer) =>
       })
       .end(buffer);
   });
+/* DELETE HELPER */
+const deleteFromCloudinary = async (url) => {
+  if (!url) return;
+  try {
+    const publicIdWithFolder = url.split("/").slice(-2).join("/").split(".")[0];
+    await cloudinary.uploader.destroy(publicIdWithFolder);
+  } catch (error) {
+    console.error("Error deleting image from cloudinary:", error);
+  }
+};
 
 /* ================= CREATE ================= */
 export const createTrustBody = async (req, res) => {
   try {
-    const { name, designation, status, description, created_by } = req.body;
+    const { name, designation, status, description, image_alt, created_by } =
+      req.body;
 
     if (!name || !designation || !created_by || !req.file) {
       return res.status(400).json({
@@ -35,6 +46,7 @@ export const createTrustBody = async (req, res) => {
       designation,
       status: status || "active",
       description,
+      image_alt,
       created_by,
       image: uploadResult.secure_url, // ✅ ONLY URL
     });
@@ -85,6 +97,7 @@ export const updateTrustBody = async (req, res) => {
     trustBody.designation = req.body.designation ?? trustBody.designation;
     trustBody.status = req.body.status ?? trustBody.status;
     trustBody.description = req.body.description ?? trustBody.description;
+    trustBody.image_alt = req.body.image_alt ?? trustBody.image_alt;
     trustBody.updated_by = req.body.updated_by ?? trustBody.updated_by;
 
     // ✅ IMAGE UPDATE (optional)

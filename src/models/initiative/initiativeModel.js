@@ -26,6 +26,9 @@ const initiativeSchema = new mongoose.Schema(
       type: String, // cloudinary URL
       required: true,
     },
+    image_alt: {
+      type: String,
+    },
     objective_catagory: {
       type: String,
       required: false,
@@ -54,7 +57,7 @@ const initiativeSchema = new mongoose.Schema(
       trim: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export default mongoose.model("Initiative", initiativeSchema);

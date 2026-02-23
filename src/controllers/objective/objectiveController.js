@@ -12,11 +12,31 @@ const uploadToCloudinary = (buffer) =>
       .end(buffer);
   });
 
+/* DELETE HELPER */
+const deleteFromCloudinary = async (url) => {
+  if (!url) return;
+  try {
+    const publicId = url.split("/").pop().split(".")[0];
+    await cloudinary.uploader.destroy(`objectives/${publicId}`);
+  } catch (error) {
+    console.error("Error deleting image from cloudinary:", error);
+  }
+};
+
 /* CREATE */
 export const createObjective = async (req, res) => {
   try {
-    const { title, slug, desc, status, meta_keywords, meta_desc, created_by } =
-      req.body;
+    const {
+      title,
+      slug,
+      desc,
+      status,
+      meta_keywords,
+      meta_desc,
+      created_by,
+      image_alt,
+      logo_alt,
+    } = req.body;
 
     if (!title || !slug || !desc || !created_by) {
       return res.status(400).json({
@@ -40,7 +60,9 @@ export const createObjective = async (req, res) => {
       });
     }
 
-    const imageUploadResult = await uploadToCloudinary(req.files.image[0].buffer);
+    const imageUploadResult = await uploadToCloudinary(
+      req.files.image[0].buffer,
+    );
     const logoUploadResult = await uploadToCloudinary(req.files.logo[0].buffer);
 
     const data = await Objective.create({
@@ -48,7 +70,9 @@ export const createObjective = async (req, res) => {
       slug,
       desc,
       image: imageUploadResult.secure_url,
+      image_alt,
       logo: logoUploadResult.secure_url,
+      logo_alt,
       status,
       meta_keywords,
       meta_desc,
@@ -100,15 +124,28 @@ export const updateObjective = async (req, res) => {
         .json({ success: false, message: "Objective not found" });
     }
 
+    // Check if slug is being updated and if it already exists
+    if (req.body.slug && req.body.slug !== data.slug) {
+      const existingSlug = await Objective.findOne({ slug: req.body.slug });
+      if (existingSlug) {
+        return res.status(409).json({
+          success: false,
+          message: "Slug already exists",
+        });
+      }
+    }
+
     let imageUrl = data.image;
     let logoUrl = data.logo;
 
     if (req.files && req.files.image) {
+      await deleteFromCloudinary(data.image);
       const uploadResult = await uploadToCloudinary(req.files.image[0].buffer);
       imageUrl = uploadResult.secure_url;
     }
 
     if (req.files && req.files.logo) {
+      await deleteFromCloudinary(data.logo);
       const uploadResult = await uploadToCloudinary(req.files.logo[0].buffer);
       logoUrl = uploadResult.secure_url;
     }
@@ -119,16 +156,18 @@ export const updateObjective = async (req, res) => {
     data.status = req.body.status || data.status;
     data.meta_keywords = req.body.meta_keywords ?? data.meta_keywords;
     data.meta_desc = req.body.meta_desc ?? data.meta_desc;
+    data.image_alt = req.body.image_alt ?? data.image_alt;
+    data.logo_alt = req.body.logo_alt ?? data.logo_alt;
     data.image = imageUrl;
     data.logo = logoUrl;
     data.updated_by = req.body.updated_by || data.updated_by;
 
-    await data.save();
+    const updatedObjective = await data.save();
 
     res.status(200).json({
       success: true,
       message: "Objective updated successfully",
-      data,
+      data: updatedObjective,
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -138,12 +177,16 @@ export const updateObjective = async (req, res) => {
 /* DELETE */
 export const deleteObjective = async (req, res) => {
   try {
-    const data = await Objective.findByIdAndDelete(req.params.id);
+    const data = await Objective.findById(req.params.id);
     if (!data) {
       return res
         .status(404)
         .json({ success: false, message: "Objective not found" });
     }
+
+    await deleteFromCloudinary(data.image);
+    await deleteFromCloudinary(data.logo);
+    await data.deleteOne();
 
     res.status(200).json({
       success: true,

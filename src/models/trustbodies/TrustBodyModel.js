@@ -26,7 +26,9 @@ const TrustBodySchema = new mongoose.Schema(
       type: String, // ✅ ONLY CLOUDINARY URL
       required: true,
     },
-
+    image_alt: {
+      type: String,
+    },
     status: {
       type: String,
       enum: ["Active", "Inactive"],
@@ -49,7 +51,7 @@ const TrustBodySchema = new mongoose.Schema(
       default: null,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export default mongoose.model("TrustBody", TrustBodySchema);

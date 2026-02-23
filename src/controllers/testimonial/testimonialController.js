@@ -2,11 +2,30 @@ import Testimonial from "../../models/testimonial/testimonialModel.js";
 import cloudinary from "../../config/cloudinary.js";
 
 /* ===============================
+   HELPERS
+================================ */
+const uploadToCloudinary = (buffer) =>
+  new Promise((resolve, reject) => {
+    cloudinary.uploader
+      .upload_stream({ folder: "testimonials" }, (error, result) => {
+        if (error) reject(error);
+        else resolve(result);
+      })
+      .end(buffer);
+  });
+
+const deleteFromCloudinary = async (url) => {
+  if (!url) return;
+  const publicId = url.split("/").pop().split(".")[0];
+  await cloudinary.uploader.destroy(`testimonials/${publicId}`);
+};
+
+/* ===============================
    CREATE TESTIMONIAL
 ================================ */
 export const createTestimonial = async (req, res) => {
   try {
-    const { name, desc, status, created_by } = req.body;
+    const { name, desc, status, created_by, image_alt } = req.body;
 
     if (!name || !desc || !created_by || !req.file) {
       return res.status(400).json({
@@ -16,18 +35,12 @@ export const createTestimonial = async (req, res) => {
     }
 
     // upload image to cloudinary
-    const uploadResult = await new Promise((resolve, reject) => {
-      cloudinary.uploader
-        .upload_stream({ folder: "testimonials" }, (error, result) => {
-          if (error) reject(error);
-          else resolve(result);
-        })
-        .end(req.file.buffer);
-    });
+    const uploadResult = await uploadToCloudinary(req.file.buffer);
 
     const data = await Testimonial.create({
       name,
       image: uploadResult.secure_url,
+      image_alt,
       desc,
       status,
       created_by,
@@ -143,7 +156,7 @@ export const updateTestimonial = async (req, res) => {
 ================================ */
 export const deleteTestimonial = async (req, res) => {
   try {
-    const data = await Testimonial.findByIdAndDelete(req.params.id);
+    const data = await Testimonial.findById(req.params.id);
 
     if (!data) {
       return res.status(404).json({
@@ -152,9 +165,13 @@ export const deleteTestimonial = async (req, res) => {
       });
     }
 
+    await deleteFromCloudinary(data.image);
+    await data.deleteOne();
+
     res.status(200).json({
       success: true,
       message: "Testimonial deleted successfully",
+      data,
     });
   } catch (error) {
     res.status(500).json({
