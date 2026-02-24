@@ -1,6 +1,5 @@
 import Blog from "../../models/blog/BlogModel.js";
 import cloudinary from "../../config/cloudinary.js";
-import fs from "fs";
 import slugify from "slugify";
 
 /* ================= CLOUDINARY HELPER ================= */
@@ -13,6 +12,12 @@ const uploadToCloudinary = (buffer) =>
       })
       .end(buffer);
   });
+
+const deleteFromCloudinary = async (url) => {
+  if (!url) return;
+  const publicId = url.split("/").pop().split(".")[0];
+  await cloudinary.uploader.destroy(`blogs/${publicId}`);
+};
 
 /* ================= CREATE BLOG ================= */
 export const createBlog = async (req, res) => {
@@ -27,6 +32,8 @@ export const createBlog = async (req, res) => {
       status,
       createdBy,
       updatedBy,
+      image_alt,
+      slug: inputSlug,
     } = req.body;
 
     if (!req.file) {
@@ -34,7 +41,9 @@ export const createBlog = async (req, res) => {
         .status(400)
         .json({ success: false, message: "Image is required" });
     }
-    const slug = slugify(title, { lower: true, strict: true });
+
+    let slug = inputSlug || title;
+    slug = slugify(slug, { lower: true, strict: true });
     const exists = await Blog.findOne({ slug });
     if (exists) {
       return res
@@ -43,7 +52,6 @@ export const createBlog = async (req, res) => {
     }
 
     const upload = await uploadToCloudinary(req.file.buffer);
-
 
     const blog = await Blog.create({
       title,
@@ -57,6 +65,7 @@ export const createBlog = async (req, res) => {
       createdBy,
       updatedBy,
       image: upload.secure_url,
+      image_alt: image_alt || "",
     });
 
     res.status(201).json({
@@ -103,25 +112,36 @@ export const updateBlog = async (req, res) => {
         .status(404)
         .json({ success: false, message: "Blog not found" });
 
+    if (req.body.slug && req.body.slug !== blog.slug) {
+      const newSlug = slugify(req.body.slug, { lower: true, strict: true });
+      const exists = await Blog.findOne({ slug: newSlug });
+      if (exists) {
+        return res
+          .status(409)
+          .json({ success: false, message: "Slug already exists" });
+      }
+      blog.slug = newSlug;
+    }
+
     let imageUrl = blog.image;
 
     if (req.file) {
+      await deleteFromCloudinary(blog.image);
       const upload = await uploadToCloudinary(req.file.buffer);
       imageUrl = upload.secure_url;
     }
 
     blog.title = req.body.title || blog.title;
-    blog.slug = req.body.slug || blog.slug;
     blog.category = req.body.category || blog.category;
     blog.author = req.body.author || blog.author;
-    blog.meta_keyword = req.body.meta_keyword || blog.meta_keyword;
-    blog.meta_description = req.body.meta_description || blog.meta_description;
+    blog.meta_keyword = req.body.meta_keyword ?? blog.meta_keyword;
+    blog.meta_description = req.body.meta_description ?? blog.meta_description;
     blog.description = req.body.description || blog.description;
     blog.status = req.body.status || blog.status;
     blog.image = imageUrl;
+    blog.image_alt = req.body.image_alt ?? blog.image_alt;
     blog.createdBy = req.body.createdBy || blog.createdBy;
     blog.updatedBy = req.body.updatedBy || blog.updatedBy;
-
 
     const updated = await blog.save();
 
@@ -144,8 +164,7 @@ export const deleteBlog = async (req, res) => {
         .status(404)
         .json({ success: false, message: "Blog not found" });
 
-    const publicId = blog.image.split("/").pop().split(".")[0];
-    await cloudinary.uploader.destroy(`blogs/${publicId}`);
+    await deleteFromCloudinary(blog.image);
 
     await blog.deleteOne();
 

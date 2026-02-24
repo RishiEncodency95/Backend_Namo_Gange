@@ -54,6 +54,10 @@ const eventSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    image_alt: {
+      type: String,
+      default: "",
+    },
     status: {
       type: String,
       enum: ["Active", "Inactive"],
@@ -72,7 +76,7 @@ const eventSchema = new mongoose.Schema(
       trim: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export default mongoose.model("Event", eventSchema);

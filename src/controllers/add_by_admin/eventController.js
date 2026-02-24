@@ -21,6 +21,7 @@ export const createEvent = async (req, res) => {
       start_date,
       end_date,
       image,
+      image_alt,
       reporting_point,
       coordinator_contact,
       reporting_time,
@@ -46,6 +47,7 @@ export const createEvent = async (req, res) => {
       start_date,
       end_date,
       image: uploadResult.secure_url,
+      image_alt,
       reporting_point,
       coordinator_contact,
       reporting_time,
@@ -143,6 +145,7 @@ export const updateEvent = async (req, res) => {
     data.reporting_time = req.body.reporting_time ?? data.reporting_time;
     data.HSN_code = req.body.HSN_code ?? data.HSN_code;
     data.link = req.body.link ?? data.link;
+    data.image_alt = req.body.image_alt ?? data.image_alt;
     data.description = req.body.description ?? data.description;
     data.status = req.body.status ?? data.status;
     data.updated_by = req.body.updated_by ?? data.updated_by;

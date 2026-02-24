@@ -68,7 +68,7 @@ export const createAbout = async (req, res) => {
 /* GET ALL */
 export const getAllAbouts = async (req, res) => {
   try {
-    const abouts = await About.find().sort({ createdAt: -1 });
+    const abouts = await About.find().sort({ createdAt: 1 });
     res.status(200).json({ success: true, data: abouts });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

@@ -42,6 +42,12 @@ const blogSchema = new mongoose.Schema(
       required: true,
     },
 
+    image_alt: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
     description: {
       type: String,
       required: true,
