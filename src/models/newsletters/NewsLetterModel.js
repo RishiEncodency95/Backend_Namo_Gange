@@ -29,6 +29,9 @@ const NewsLetterSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    image_alt: {
+      type: String,
+    },
 
     pdf: {
       type: String,

@@ -16,7 +16,7 @@ const uploadToCloudinary = (buffer, folder, resource_type = "image") =>
 /* ================= CREATE ================= */
 export const createNewsLetter = async (req, res) => {
   try {
-    const { title, monthYear, order_by, status } = req.body;
+    const { title, monthYear, order_by, status,image_alt } = req.body;
 
     if (!title || !monthYear || !req.files?.image || !req.files?.pdf) {
       return res.status(400).json({
@@ -42,6 +42,7 @@ export const createNewsLetter = async (req, res) => {
       order_by: order_by || 0,
       status: status || "Active",
       image: imageUpload.secure_url,
+      image_alt,
       pdf: pdfUpload.secure_url,
     });
 
@@ -109,6 +110,7 @@ export const updateNewsLetter = async (req, res) => {
     newsletter.monthYear = req.body.monthYear ?? newsletter.monthYear;
     newsletter.order_by = req.body.order_by ?? newsletter.order_by;
     newsletter.status = req.body.status ?? newsletter.status;
+    newsletter.image_alt = req.body.image_alt ?? newsletter.image_alt;
 
     // IMAGE UPDATE
     if (req.files?.image) {

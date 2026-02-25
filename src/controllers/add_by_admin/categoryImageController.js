@@ -27,6 +27,7 @@ export const createCategoryImage = async (req, res) => {
       status: req.body.status,
       created_by: req.body.created_by,
       image: upload.secure_url,
+      image_alt: req.body.image_alt,
     });
 
     res.status(201).json({
@@ -90,7 +91,7 @@ export const updateCategoryImage = async (req, res) => {
       fs.unlinkSync(req.file.path);
     }
 
-    // categoryImage.title = req.body.title || categoryImage.title; 
+    // categoryImage.title = req.body.title || categoryImage.title;
     // 🔥 title change → slug auto update
     if (req.body.title && req.body.title !== categoryImage.title) {
       categoryImage.slug = slugify(req.body.title);
@@ -100,6 +101,7 @@ export const updateCategoryImage = async (req, res) => {
     categoryImage.order_by = req.body.order_by || categoryImage.order_by;
     categoryImage.status = req.body.status || categoryImage.status;
     categoryImage.image = newImage;
+    categoryImage.image_alt = req.body.image_alt || categoryImage.image_alt;
 
     const updated = await categoryImage.save();
 

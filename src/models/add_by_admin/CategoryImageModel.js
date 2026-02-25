@@ -11,7 +11,7 @@ const CategoryImageSchema = new mongoose.Schema(
     },
 
     image: { type: String, required: true },
-
+    image_alt: { type: String },
     category: { type: String, required: true },
 
     order_by: { type: Number, default: 0 },
@@ -22,7 +22,7 @@ const CategoryImageSchema = new mongoose.Schema(
       default: "Active",
     },
   },
-  { timestamps: true } // createdAt & updatedAt auto
+  { timestamps: true }, // createdAt & updatedAt auto
 );
 
 export default mongoose.model("CategoryImage", CategoryImageSchema);

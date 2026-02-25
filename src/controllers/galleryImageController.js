@@ -29,6 +29,7 @@ export const createGallery = async (req, res) => {
       orderBy: req.body.orderBy,
       createdBy: req.body.createdBy,
       image: upload.secure_url,
+      image_alt: req.body.image_alt,
     });
 
     res.status(201).json({
@@ -88,16 +89,17 @@ export const updateGallery = async (req, res) => {
     }
 
     gallery.title = req.body.title || gallery.title;
-    // gallery.category = req.body.category || gallery.category;
-    if (req.body.category && req.body.category !== categoryImage.category) {
-      categoryImage.slug = slugify(req.body.category);
-      categoryImage.category = req.body.category;
-    }
+    gallery.category = req.body.category || gallery.category;
+    // if (req.body.category && req.body.category !== categoryImage.category) {
+    //   categoryImage.slug = slugify(req.body.category);
+    //   categoryImage.category = req.body.category;
+    // }
     gallery.date = req.body.date || gallery.date;
     gallery.location = req.body.location || gallery.location;
     gallery.status = req.body.status || gallery.status;
     gallery.orderBy = req.body.orderBy || gallery.orderBy;
     gallery.image = newImage;
+    gallery.image_alt = req.body.image_alt || gallery.image_alt;
 
     const updated = await gallery.save();
 

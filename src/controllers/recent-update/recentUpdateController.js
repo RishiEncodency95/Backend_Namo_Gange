@@ -15,14 +15,20 @@ const uploadToCloudinary = (buffer) =>
 /* ================= CREATE ================= */
 export const createRecentUpdate = async (req, res) => {
   try {
-    const { title, published_by, date, status, description, created_by } =
-      req.body;
+    const {
+      title,
+      published_by,
+      date,
+      status,
+      description,
+      created_by,
+      image_alt,
+    } = req.body;
 
     if (!title || !published_by || !date || !created_by || !req.file) {
       return res.status(400).json({
         success: false,
-        message:
-          "title, published_by, date, created_by and image are required",
+        message: "title, published_by, date, created_by and image are required",
       });
     }
 
@@ -34,6 +40,7 @@ export const createRecentUpdate = async (req, res) => {
       date,
       status: status || "Active",
       description,
+      image_alt,
       created_by,
       image: uploadResult.secure_url, // ✅ ONLY URL
     });
@@ -77,10 +84,9 @@ export const updateRecentUpdate = async (req, res) => {
       req.body.published_by ?? recentUpdate.published_by;
     recentUpdate.date = req.body.date ?? recentUpdate.date;
     recentUpdate.status = req.body.status ?? recentUpdate.status;
-    recentUpdate.description =
-      req.body.description ?? recentUpdate.description;
-    recentUpdate.updated_by =
-      req.body.updated_by ?? recentUpdate.updated_by;
+    recentUpdate.description = req.body.description ?? recentUpdate.description;
+    recentUpdate.updated_by = req.body.updated_by ?? recentUpdate.updated_by;
+    recentUpdate.image_alt = req.body.image_alt ?? recentUpdate.image_alt;
 
     // ✅ IMAGE OPTIONAL
     if (req.file) {

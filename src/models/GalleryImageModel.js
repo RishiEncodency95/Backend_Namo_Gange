@@ -4,6 +4,7 @@ const GallerySchema = new mongoose.Schema(
   {
     title: { type: String, required: true },
     image: { type: String, required: true }, // cloudinary URL
+    image_alt: { type: String },
     category: { type: String, required: true },
     slug: {
       type: String,

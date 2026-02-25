@@ -24,6 +24,10 @@ const RecentUpdateSchema = new mongoose.Schema(
       required: true,
     },
 
+    image_alt: {
+      type: String,
+    },
+
     status: {
       type: String,
       enum: ["Active", "Inactive"],
@@ -45,7 +49,7 @@ const RecentUpdateSchema = new mongoose.Schema(
       default: null,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export default mongoose.model("RecentUpdate", RecentUpdateSchema);
