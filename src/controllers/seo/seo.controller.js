@@ -234,7 +234,7 @@ export const createSeo = async (req, res) => {
       metaTitle: req.body.metaTitle,
       metaKeywords: req.body.metaKeywords || "",
       metaDescription: req.body.metaDescription,
-      open_h1: req.body.open_h1 || "",
+      banner_alt: req.body.banner_alt || "",
       open_graph: openGraphImageUrl,
       openGraphTags: req.body.openGraphTags || "",
       schemaMarkup: req.body.schemaMarkup || "",
@@ -404,7 +404,10 @@ export const updateSeo = async (req, res) => {
           ? req.body.metaKeywords
           : seo.metaKeywords,
       metaDescription: req.body.metaDescription || seo.metaDescription,
-      open_h1: req.body.open_h1 !== undefined ? req.body.open_h1 : seo.open_h1,
+      banner_alt:
+        req.body.banner_alt !== undefined
+          ? req.body.banner_alt
+          : seo.banner_alt,
       open_graph: openGraphImageUrl,
       openGraphTags:
         req.body.openGraphTags !== undefined

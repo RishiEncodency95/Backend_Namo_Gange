@@ -108,7 +108,7 @@ const seoSchema = new mongoose.Schema(
       maxlength: 155, // Changed from 160 to 155
     },
 
-    open_h1: {
+    banner_alt: {
       type: String,
       default: "",
     },
