@@ -31,8 +31,7 @@ export const createInitiative = async (req, res) => {
       desc,
       objective_catagory,
       status,
-      meta_keywords,
-      meta_desc,
+
       created_by,
       image_alt,
     } = req.body;
@@ -65,8 +64,7 @@ export const createInitiative = async (req, res) => {
       image_alt,
       objective_catagory,
       status,
-      meta_keywords,
-      meta_desc,
+
       created_by,
     });
 
@@ -166,8 +164,6 @@ export const updateInitiative = async (req, res) => {
     data.objective_catagory =
       req.body.objective_catagory || data.objective_catagory;
     data.status = req.body.status || data.status;
-    data.meta_keywords = req.body.meta_keywords ?? data.meta_keywords;
-    data.meta_desc = req.body.meta_desc ?? data.meta_desc;
     data.updated_by = req.body.updated_by || data.updated_by;
 
     const updatedData = await data.save();

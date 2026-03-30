@@ -30,9 +30,7 @@ export const createAchievement = async (req, res) => {
       desc,
       link,
       image_alt,
-      meta_tag,
       status,
-      meta_desc,
       created_by,
     } = req.body;
 
@@ -61,8 +59,7 @@ export const createAchievement = async (req, res) => {
       link,
       image: uploadResult.secure_url,
       image_alt,
-      meta_tag,
-      meta_desc,
+     
       status,
       created_by,
     });
@@ -147,8 +144,6 @@ export const updateAchievement = async (req, res) => {
     data.link = req.body.link ?? data.link;
     data.image = imageUrl;
     data.image_alt = req.body.image_alt ?? data.image_alt;
-    data.meta_tag = req.body.meta_tag ?? data.meta_tag;
-    data.meta_desc = req.body.meta_desc ?? data.meta_desc;
     data.status = req.body.status || data.status;
     data.updated_by = req.body.updated_by || data.updated_by;
 

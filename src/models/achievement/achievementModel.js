@@ -34,14 +34,6 @@ const achievementSchema = new mongoose.Schema(
       enum: ["Active", "Inactive"],
       default: "Active",
     },
-    meta_tag: {
-      type: String,
-      default: "",
-    },
-    meta_desc: {
-      type: String,
-      default: "",
-    },
     created_by: {
       type: String,
       required: true,

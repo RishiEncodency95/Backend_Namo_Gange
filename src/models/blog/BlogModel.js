@@ -27,16 +27,6 @@ const blogSchema = new mongoose.Schema(
       trim: true,
     },
 
-    meta_keyword: {
-      type: String,
-      default: "",
-    },
-
-    meta_description: {
-      type: String,
-      default: "",
-    },
-
     image: {
       type: String, // Cloudinary URL
       required: true,

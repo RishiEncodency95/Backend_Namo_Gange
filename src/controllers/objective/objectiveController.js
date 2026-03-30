@@ -26,17 +26,8 @@ const deleteFromCloudinary = async (url) => {
 /* CREATE */
 export const createObjective = async (req, res) => {
   try {
-    const {
-      title,
-      slug,
-      desc,
-      status,
-      meta_keywords,
-      meta_desc,
-      created_by,
-      image_alt,
-      logo_alt,
-    } = req.body;
+    const { title, slug, desc, status, created_by, image_alt, logo_alt } =
+      req.body;
 
     if (!title || !slug || !desc || !created_by) {
       return res.status(400).json({
@@ -74,8 +65,6 @@ export const createObjective = async (req, res) => {
       logo: logoUploadResult.secure_url,
       logo_alt,
       status,
-      meta_keywords,
-      meta_desc,
       created_by,
     });
 
@@ -154,8 +143,6 @@ export const updateObjective = async (req, res) => {
     data.slug = req.body.slug || data.slug;
     data.desc = req.body.desc || data.desc;
     data.status = req.body.status || data.status;
-    data.meta_keywords = req.body.meta_keywords ?? data.meta_keywords;
-    data.meta_desc = req.body.meta_desc ?? data.meta_desc;
     data.image_alt = req.body.image_alt ?? data.image_alt;
     data.logo_alt = req.body.logo_alt ?? data.logo_alt;
     data.image = imageUrl;

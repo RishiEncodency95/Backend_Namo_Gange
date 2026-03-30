@@ -26,8 +26,6 @@ export const createBlog = async (req, res) => {
       title,
       category,
       author,
-      meta_keyword,
-      meta_description,
       description,
       status,
       createdBy,
@@ -58,8 +56,6 @@ export const createBlog = async (req, res) => {
       slug,
       category,
       author,
-      meta_keyword,
-      meta_description,
       description,
       status,
       createdBy,
@@ -134,8 +130,6 @@ export const updateBlog = async (req, res) => {
     blog.title = req.body.title || blog.title;
     blog.category = req.body.category || blog.category;
     blog.author = req.body.author || blog.author;
-    blog.meta_keyword = req.body.meta_keyword ?? blog.meta_keyword;
-    blog.meta_description = req.body.meta_description ?? blog.meta_description;
     blog.description = req.body.description || blog.description;
     blog.status = req.body.status || blog.status;
     blog.image = imageUrl;

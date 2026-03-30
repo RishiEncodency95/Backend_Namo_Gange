@@ -38,14 +38,7 @@ const initiativeSchema = new mongoose.Schema(
       enum: ["Active", "Inactive"],
       default: "Active",
     },
-    meta_keywords: {
-      type: String, // comma separated
-      default: "",
-    },
-    meta_desc: {
-      type: String,
-      default: "",
-    },
+   
     created_by: {
       type: String,
       required: true,
