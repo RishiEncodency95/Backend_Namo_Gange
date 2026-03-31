@@ -56,6 +56,7 @@ import seoRoutes from "./src/routes/seo/seo.routes.js";
 import heroRoutes from "./src/routes/hero/heroRoutes.js";
 import aboutRoutes from "./src/routes/about_us/aboutRoutes.js";
 import seoCodeRoutes from "./src/routes/seo/seoCode.routes.js";
+import socialRoutes from "./src/routes/seo/socialMediaRoutes.js";
 
 const app = express();
 
@@ -153,6 +154,7 @@ app.use("/api/v1/seo", seoRoutes);
 app.use("/api/v1/heroes", heroRoutes);
 app.use("/api/v1/about-us", aboutRoutes);
 app.use("/api/v1/seo-code", seoCodeRoutes);
+app.use("/api/v1/social-media", socialRoutes);
 
 app.get("/", (req, res) => res.send("Server Running"));
 
