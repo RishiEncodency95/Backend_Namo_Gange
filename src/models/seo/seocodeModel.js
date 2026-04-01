@@ -2,7 +2,11 @@ import mongoose from "mongoose";
 
 const seoSchema = new mongoose.Schema(
   {
-    seo_code: {
+    seo_header_code: {
+      type: String,
+      default: "",
+    },
+    seo_footer_code: {
       type: String,
       default: "",
     },

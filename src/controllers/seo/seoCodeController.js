@@ -43,7 +43,7 @@ const deleteFromCloudinary = async (url, folder, resourceType = "image") => {
 /* ================= CREATE ================= */
 export const createSeoCode = async (req, res) => {
   try {
-    const { seo_code, status } = req.body;
+    const { seo_header_code, seo_footer_code, status } = req.body;
 
     // Handle file uploads
     let googleSearchConsoleUrl = "";
@@ -78,7 +78,8 @@ export const createSeoCode = async (req, res) => {
     }
 
     const newSeoCode = await SeoCode.create({
-      seo_code,
+      seo_header_code,
+      seo_footer_code,
       google_search_console: googleSearchConsoleUrl,
       report: reportUrl,
       sitemap: sitemapUrl,
