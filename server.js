@@ -59,6 +59,7 @@ import seoCodeRoutes from "./src/routes/seo/seoCode.routes.js";
 import socialRoutes from "./src/routes/seo/socialMediaRoutes.js";
 import jobRoutes from "./src/routes/job/jobRoutes.js";
 import jobApplyRoutes from "./src/routes/job/jobApplyRoutes.js";
+import clickAnalyticsRoutes from "./src/routes/click_analytics/clickAnalytics.routes.js";
 
 const app = express();
 
@@ -159,6 +160,7 @@ app.use("/api/v1/seo-code", seoCodeRoutes);
 app.use("/api/v1/social-media", socialRoutes);
 app.use("/api/v1/jobs", jobRoutes);
 app.use("/api/v1/job-apply", jobApplyRoutes);
+app.use("/api/v1/click-analytics", clickAnalyticsRoutes);
 
 app.get("/", (req, res) => res.send("Server Running"));
 
