@@ -10,11 +10,9 @@ const eventSchema = new mongoose.Schema(
 
     start_date: {
       type: Date,
-      required: true,
     },
     end_date: {
       type: Date,
-      required: true,
     },
     reporting_point: {
       type: String,

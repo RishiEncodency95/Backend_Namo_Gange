@@ -33,10 +33,10 @@ export const createEvent = async (req, res) => {
       updated_by,
     } = req.body;
 
-    if (!name || !start_date || !end_date || !created_by) {
+    if (!name || !created_by) {
       return res.status(400).json({
         success: false,
-        message: "name, start_date, end_date and created_by are required",
+        message: "name and created_by are required",
       });
     }
 
