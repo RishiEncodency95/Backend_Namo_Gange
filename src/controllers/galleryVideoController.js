@@ -12,18 +12,10 @@ export const createGalleryVideo = async (req, res) => {
       });
     }
 
-    const {
-      title,
-      video_link,
-      category,
-      date,
-      location,
-      status,
-      orderBy,
-      createdBy,
-    } = req.body;
+    const { title, video_link, category, status, orderBy, createdBy } =
+      req.body;
 
-    if (!title || !video_link || !category || !date || !location) {
+    if (!title || !video_link) {
       return res.status(400).json({
         success: false,
         message: "Required fields missing",
@@ -34,8 +26,6 @@ export const createGalleryVideo = async (req, res) => {
       title,
       video_link,
       category,
-      date,
-      location,
       status,
       orderBy,
       createdBy,
@@ -89,8 +79,6 @@ export const updateGalleryVideo = async (req, res) => {
     video.title = req.body.title || video.title;
     video.video_link = req.body.video_link || video.video_link;
     video.category = req.body.category || video.category;
-    video.date = req.body.date || video.date;
-    video.location = req.body.location || video.location;
     video.status = req.body.status || video.status;
     video.orderBy = req.body.orderBy || video.orderBy;
 

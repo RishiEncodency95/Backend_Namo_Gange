@@ -6,9 +6,7 @@ const GalleryVideoSchema = new mongoose.Schema(
 
     video_link: { type: String }, // ✅ YouTube / MP4 URL
 
-    category: { type: String, required: true },
-    date: { type: Date, required: true },
-    location: { type: String, required: true },
+    category: { type: String },
 
     status: {
       type: String,
@@ -19,7 +17,7 @@ const GalleryVideoSchema = new mongoose.Schema(
     orderBy: { type: Number, default: 0 },
     createdBy: { type: String, default: null },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export default mongoose.model("GalleryVideo", GalleryVideoSchema);
