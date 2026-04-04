@@ -10,7 +10,9 @@ const socialMediaSchema = new mongoose.Schema(
     whatsappNumber: String,
     whatsappMessage: String,
     callNumber: String,
+    callNumber2: String,
     mail: String,
+    mail2: String,
     address: String,
     status: {
       type: String,
