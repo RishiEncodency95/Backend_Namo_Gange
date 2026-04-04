@@ -6,35 +6,40 @@ import slugify from "../utils/slugify.js";
 // ---------------- CREATE ----------------
 export const createGallery = async (req, res) => {
   try {
-    const { title, category, date, location, createdBy } = req.body;
-    if (!req.file)
-      return res.status(400).json({ success: false, message: "Image missing" });
+    const { category, status, createdBy, image_alt } = req.body;
 
-    const upload = await new Promise((resolve, reject) => {
-      cloudinary.uploader
-        .upload_stream({ folder: "gallery_images" }, (error, result) => {
-          if (error) reject(error);
-          else resolve(result);
-        })
-        .end(req.file.buffer);
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ success: false, message: "Images missing" });
+    }
+
+    // Upload each image to Cloudinary
+    const uploadPromises = req.files.map(file => {
+      return new Promise((resolve, reject) => {
+        cloudinary.uploader.upload_stream(
+          { folder: "gallery_images" },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result.secure_url);
+          }
+        ).end(file.buffer);
+      });
     });
-    const slug = slugify(req.body.category);
+
+    const imageUrls = await Promise.all(uploadPromises);
+
+    const slug = slugify(category || "");
     const galleryImage = await GalleryImage.create({
-      title: req.body.title,
-      category: req.body.category,
-      slug: slug,
-      date: req.body.date,
-      location: req.body.location,
-      status: req.body.status,
-      orderBy: req.body.orderBy,
-      createdBy: req.body.createdBy,
-      image: upload.secure_url,
-      image_alt: req.body.image_alt,
+      category,
+      slug,
+      status: status || "Active",
+      createdBy,
+      images: imageUrls.map(url => ({ url, alt: image_alt || "" })),
+      image_alt,
     });
 
     res.status(201).json({
       success: true,
-      message: "Gallery image added",
+      message: "Gallery images added",
       gallery: galleryImage,
     });
   } catch (error) {
@@ -46,7 +51,6 @@ export const createGallery = async (req, res) => {
 export const getAllGallery = async (req, res) => {
   try {
     const gallery = await GalleryImage.find().sort({
-      orderBy: 1,
       createdAt: -1,
     });
 
@@ -76,29 +80,48 @@ export const updateGallery = async (req, res) => {
     if (!gallery)
       return res.status(404).json({ success: false, message: "Not found" });
 
-    let newImage = gallery.image;
+    let finalImages = gallery.images;
 
-    // if new image uploaded
-    if (req.file) {
-      const upload = await cloudinary.uploader.upload(req.file.path, {
-        folder: "gallery_images",
-      });
-
-      newImage = upload.secure_url;
-      fs.unlinkSync(req.file.path);
+    // Check for existing images to keep
+    if (req.body.existing_images) {
+      try {
+        const existing = typeof req.body.existing_images === "string"
+          ? JSON.parse(req.body.existing_images)
+          : req.body.existing_images;
+        finalImages = Array.isArray(existing) ? existing : [existing];
+      } catch (e) {
+        // Fallback if parsing fails
+      }
     }
 
-    gallery.title = req.body.title || gallery.title;
+    // Process newly uploaded images
+    if (req.files && req.files.length > 0) {
+      const uploadPromises = req.files.map(file => {
+        return new Promise((resolve, reject) => {
+          cloudinary.uploader.upload_stream(
+            { folder: "gallery_images" },
+            (error, result) => {
+              if (error) reject(error);
+              else resolve(result.secure_url);
+            }
+          ).end(file.buffer);
+        });
+      });
+      const newUrls = await Promise.all(uploadPromises);
+      const newImageObjects = newUrls.map(url => ({
+        url,
+        alt: req.body.image_alt || ""
+      }));
+      finalImages = [...finalImages, ...newImageObjects];
+    }
+
+    // Update metadata
     gallery.category = req.body.category || gallery.category;
-    // if (req.body.category && req.body.category !== categoryImage.category) {
-    //   categoryImage.slug = slugify(req.body.category);
-    //   categoryImage.category = req.body.category;
-    // }
-    gallery.date = req.body.date || gallery.date;
-    gallery.location = req.body.location || gallery.location;
+    if (req.body.category) {
+      gallery.slug = slugify(req.body.category);
+    }
     gallery.status = req.body.status || gallery.status;
-    gallery.orderBy = req.body.orderBy || gallery.orderBy;
-    gallery.image = newImage;
+    gallery.images = finalImages;
     gallery.image_alt = req.body.image_alt || gallery.image_alt;
 
     const updated = await gallery.save();
@@ -120,10 +143,14 @@ export const deleteGallery = async (req, res) => {
     if (!gallery)
       return res.status(404).json({ success: false, message: "Not found" });
 
-    const imgURL = gallery.image;
-    const publicId = imgURL.split("/").pop().split(".")[0];
-
-    await cloudinary.uploader.destroy(`gallery_images/${publicId}`);
+    // Delete all images from Cloudinary
+    if (gallery.images && gallery.images.length > 0) {
+      const deletePromises = gallery.images.map(imgURL => {
+        const publicId = imgURL.split("/").pop().split(".")[0];
+        return cloudinary.uploader.destroy(`gallery_images/${publicId}`);
+      });
+      await Promise.all(deletePromises);
+    }
 
     await gallery.deleteOne();
 

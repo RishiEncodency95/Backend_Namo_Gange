@@ -2,9 +2,13 @@ import mongoose from "mongoose";
 
 const GallerySchema = new mongoose.Schema(
   {
-    title: { type: String, required: true },
-    image: { type: String, required: true }, // cloudinary URL
-    image_alt: { type: String },
+    images: [
+      {
+        url: { type: String, required: true },
+        alt: { type: String, default: "" },
+      },
+    ],
+    image_alt: { type: String }, // common alt text
     category: { type: String, required: true },
     slug: {
       type: String,
@@ -12,13 +16,10 @@ const GallerySchema = new mongoose.Schema(
       lowercase: true,
       index: true,
     },
-    date: { type: Date, required: true },
-    location: { type: String, required: true },
     status: { type: String, enum: ["Active", "Inactive"], default: "Active" },
-    orderBy: { type: Number, default: 0 },
-    createdBy: { type: String, default: null }, // admin name/id
+    createdBy: { type: String, default: null },
   },
-  { timestamps: true } // adds createdAt and updatedAt
+  { timestamps: true }
 );
 
 export default mongoose.model("GalleryImage", GallerySchema);
