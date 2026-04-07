@@ -133,14 +133,17 @@ export const updateEvent = async (req, res) => {
       });
     }
 
+    // Prepare updated image URL
+    let imageUrl = data.image;
+    if (req.file) {
+      const uploadResult = await uploadToCloudinary(req.file.buffer);
+      imageUrl = uploadResult.secure_url;
+    }
+
     data.name = req.body.name ?? data.name;
     data.start_date = req.body.start_date ?? data.start_date;
     data.end_date = req.body.end_date ?? data.end_date;
-    if (req.file) {
-      const uploadResult = await uploadToCloudinary(req.file.buffer);
-      data.image = uploadResult.secure_url;
-    }
-    data.image = req.body.image ?? data.image;
+    data.image = imageUrl;
     data.reporting_point = req.body.reporting_point ?? data.reporting_point;
     data.coordinator_contact =
       req.body.coordinator_contact ?? data.coordinator_contact;
