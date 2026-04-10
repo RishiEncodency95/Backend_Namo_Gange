@@ -13,13 +13,18 @@ const router = express.Router();
 
 router.post(
   "/create",
-  upload.single("image"),
+  upload.fields([{ name: "image", maxCount: 1 }, { name: "pages_images" }]),
   authMiddleware,
   createInitiative
 );
 router.get("/", getAllInitiatives);
 router.get("/:id", getInitiativeById);
-router.put("/:id", upload.single("image"), authMiddleware, updateInitiative);
+router.put(
+  "/:id",
+  upload.fields([{ name: "image", maxCount: 1 }, { name: "pages_images" }]),
+  authMiddleware,
+  updateInitiative
+);
 router.delete("/:id", authMiddleware, deleteInitiative);
 
 export default router;

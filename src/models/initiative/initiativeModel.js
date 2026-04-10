@@ -22,6 +22,10 @@ const initiativeSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    page_description: {
+      type: String,
+      default: "",
+    },
     image: {
       type: String, // cloudinary URL
       required: true,
@@ -29,6 +33,12 @@ const initiativeSchema = new mongoose.Schema(
     image_alt: {
       type: String,
     },
+    pages_images: [
+      {
+        url: { type: String, required: true },
+        alt: { type: String, default: "" },
+      },
+    ],
     objective_catagory: {
       type: String,
       required: false,

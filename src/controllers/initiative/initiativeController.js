@@ -29,15 +29,18 @@ export const createInitiative = async (req, res) => {
       link,
       slug,
       desc,
+      page_description,
       objective_catagory,
       status,
-
       created_by,
       image_alt,
+      pages_images_alts,
     } = req.body;
 
-    // ✅ image FILE req.file me aayegi
-    if (!title || !slug || !desc || !req.file || !created_by) {
+    const mainImageFile = req.files?.["image"]?.[0];
+    const pagesImagesFiles = req.files?.["pages_images"] || [];
+
+    if (!title || !slug || !desc || !mainImageFile || !created_by) {
       return res.status(400).json({
         success: false,
         message: "title, slug, desc, image and created_by are required",
@@ -52,20 +55,41 @@ export const createInitiative = async (req, res) => {
       });
     }
 
-    // ✅ Upload image to Cloudinary
-    const uploadResult = await uploadToCloudinary(req.file.buffer);
+    // ✅ Upload main image
+    const mainUploadResult = await uploadToCloudinary(mainImageFile.buffer);
+
+    // ✅ Upload supplemental images
+    const pagesImagesUploadPromises = pagesImagesFiles.map((file) =>
+      uploadToCloudinary(file.buffer)
+    );
+    const pagesUploadResults = await Promise.all(pagesImagesUploadPromises);
+
+    // Parse alts
+    let alts = [];
+    try {
+      if (pages_images_alts) {
+        alts = typeof pages_images_alts === "string" ? JSON.parse(pages_images_alts) : pages_images_alts;
+      }
+    } catch (e) {}
+
+    const pages_images = pagesUploadResults.map((res, i) => ({
+      url: res.secure_url,
+      alt: alts[i] || "",
+    }));
 
     const data = await Initiative.create({
       title,
       slug,
       desc,
+      page_description,
       link,
-      image: uploadResult.secure_url, // ✅ URL save
+      image: mainUploadResult.secure_url,
       image_alt,
+      pages_images,
       objective_catagory,
       status,
-
       created_by,
+      updated_by: created_by,
     });
 
     res.status(201).json({
@@ -74,10 +98,7 @@ export const createInitiative = async (req, res) => {
       data,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
@@ -133,10 +154,7 @@ export const updateInitiative = async (req, res) => {
   try {
     const data = await Initiative.findById(req.params.id);
     if (!data) {
-      return res.status(404).json({
-        success: false,
-        message: "Initiative not found",
-      });
+      return res.status(404).json({ success: false, message: "Initiative not found" });
     }
 
     if (req.body.slug && req.body.slug !== data.slug) {
@@ -148,19 +166,55 @@ export const updateInitiative = async (req, res) => {
       }
     }
 
+    // 1. Handle main image
     let imageUrl = data.image;
-    if (req.file) {
+    const mainImageFile = req.files?.["image"]?.[0];
+    if (mainImageFile) {
       await deleteFromCloudinary(data.image);
-      const uploadResult = await uploadToCloudinary(req.file.buffer);
+      const uploadResult = await uploadToCloudinary(mainImageFile.buffer);
       imageUrl = uploadResult.secure_url;
+    }
+
+    // 2. Handle pages_images (bulk)
+    let finalPagesImages = data.pages_images || [];
+    if (req.body.existing_pages_images) {
+      try {
+        const existing = typeof req.body.existing_pages_images === "string"
+          ? JSON.parse(req.body.existing_pages_images)
+          : req.body.existing_pages_images;
+        finalPagesImages = Array.isArray(existing) ? existing : [existing];
+      } catch (e) {}
+    }
+
+    const pagesImagesFiles = req.files?.["pages_images"] || [];
+    if (pagesImagesFiles.length > 0) {
+      const uploadPromises = pagesImagesFiles.map((file) => uploadToCloudinary(file.buffer));
+      const uploadResults = await Promise.all(uploadPromises);
+      
+      let newAlts = [];
+      try {
+        if (req.body.new_pages_images_alts) {
+          newAlts = typeof req.body.new_pages_images_alts === "string" 
+            ? JSON.parse(req.body.new_pages_images_alts) 
+            : req.body.new_pages_images_alts;
+        }
+      } catch (e) {}
+
+      const newImageObjects = uploadResults.map((res, i) => ({
+        url: res.secure_url,
+        alt: newAlts[i] || "",
+      }));
+      finalPagesImages = [...finalPagesImages, ...newImageObjects];
     }
 
     data.title = req.body.title || data.title;
     data.slug = req.body.slug || data.slug;
     data.desc = req.body.desc || data.desc;
+    data.page_description = req.body.page_description || data.page_description;
     data.link = req.body.link ?? data.link;
     data.image = imageUrl;
     data.image_alt = req.body.image_alt ?? data.image_alt;
+    data.pages_images = finalPagesImages;
     data.objective_catagory =
       req.body.objective_catagory || data.objective_catagory;
     data.status = req.body.status || data.status;
@@ -174,39 +228,37 @@ export const updateInitiative = async (req, res) => {
       data: updatedData,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
 /* ===============================
    DELETE INITIATIVE
-================================ */
+ ================================ */
 export const deleteInitiative = async (req, res) => {
   try {
     const data = await Initiative.findById(req.params.id);
 
     if (!data) {
-      return res.status(404).json({
-        success: false,
-        message: "Initiative not found",
-      });
+      return res.status(404).json({ success: false, message: "Initiative not found" });
     }
 
+    // Delete main image
     await deleteFromCloudinary(data.image);
+
+    // Delete supplemental images
+    if (data.pages_images && data.pages_images.length > 0) {
+      const deletePromises = data.pages_images.map((img) => deleteFromCloudinary(img.url));
+      await Promise.all(deletePromises);
+    }
+
     await data.deleteOne();
 
     res.status(200).json({
       success: true,
       message: "Initiative deleted successfully",
-      data,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
