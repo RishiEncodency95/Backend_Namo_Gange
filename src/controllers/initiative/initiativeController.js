@@ -1,4 +1,4 @@
-import Initiative from "../../models/initiative/initiativeModel.js";
+import Initiative from "../../models/initiative/InitiativeModel.js";
 import cloudinary from "../../config/cloudinary.js";
 
 /* ===============================
@@ -70,7 +70,7 @@ export const createInitiative = async (req, res) => {
       if (pages_images_alts) {
         alts = typeof pages_images_alts === "string" ? JSON.parse(pages_images_alts) : pages_images_alts;
       }
-    } catch (e) {}
+    } catch (e) { }
 
     const pages_images = pagesUploadResults.map((res, i) => ({
       url: res.secure_url,
@@ -183,22 +183,22 @@ export const updateInitiative = async (req, res) => {
           ? JSON.parse(req.body.existing_pages_images)
           : req.body.existing_pages_images;
         finalPagesImages = Array.isArray(existing) ? existing : [existing];
-      } catch (e) {}
+      } catch (e) { }
     }
 
     const pagesImagesFiles = req.files?.["pages_images"] || [];
     if (pagesImagesFiles.length > 0) {
       const uploadPromises = pagesImagesFiles.map((file) => uploadToCloudinary(file.buffer));
       const uploadResults = await Promise.all(uploadPromises);
-      
+
       let newAlts = [];
       try {
         if (req.body.new_pages_images_alts) {
-          newAlts = typeof req.body.new_pages_images_alts === "string" 
-            ? JSON.parse(req.body.new_pages_images_alts) 
+          newAlts = typeof req.body.new_pages_images_alts === "string"
+            ? JSON.parse(req.body.new_pages_images_alts)
             : req.body.new_pages_images_alts;
         }
-      } catch (e) {}
+      } catch (e) { }
 
       const newImageObjects = uploadResults.map((res, i) => ({
         url: res.secure_url,
