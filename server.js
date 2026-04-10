@@ -61,6 +61,7 @@ import jobRoutes from "./src/routes/job/jobRoutes.js";
 import jobApplyRoutes from "./src/routes/job/jobApplyRoutes.js";
 import clickAnalyticsRoutes from "./src/routes/click_analytics/clickAnalytics.routes.js";
 import otpRoutes from "./src/routes/otpRoutes.js";
+import donationRoutes from "./src/routes/donation/DonationRoutes.js";
 
 const app = express();
 
@@ -163,6 +164,7 @@ app.use("/api/v1/jobs", jobRoutes);
 app.use("/api/v1/job-apply", jobApplyRoutes);
 app.use("/api/v1/click-analytics", clickAnalyticsRoutes);
 app.use("/api/v1/otp", otpRoutes);
+app.use("/api/v1/donations", donationRoutes);
 
 app.get("/", (req, res) => res.send("Server Running"));
 
