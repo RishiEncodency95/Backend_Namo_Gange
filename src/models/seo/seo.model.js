@@ -118,6 +118,24 @@ const seoSchema = new mongoose.Schema(
       default: "",
     },
 
+    og_title: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    og_description: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    twitter_card: {
+      type: String,
+      enum: ["summary", "summary_large_image", "app", "player"],
+      default: "summary_large_image",
+    },
+
     openGraphTags: {
       type: String, // HTML content from editor
       default: "",
@@ -126,6 +144,24 @@ const seoSchema = new mongoose.Schema(
     schemaMarkup: {
       type: String, // JSON-LD / HTML content
       default: "",
+    },
+
+    canonical_url: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    robots_index: {
+      type: String,
+      enum: ["index", "noindex"],
+      default: "index",
+    },
+
+    robots_follow: {
+      type: String,
+      enum: ["follow", "nofollow"],
+      default: "follow",
     },
 
     status: {

@@ -236,8 +236,14 @@ export const createSeo = async (req, res) => {
       metaDescription: req.body.metaDescription,
       banner_alt: req.body.banner_alt || "",
       open_graph: openGraphImageUrl,
+      og_title: req.body.og_title || "",
+      og_description: req.body.og_description || "",
+      twitter_card: req.body.twitter_card || "summary_large_image",
       openGraphTags: req.body.openGraphTags || "",
       schemaMarkup: req.body.schemaMarkup || "",
+      canonical_url: req.body.canonical_url || "",
+      robots_index: req.body.robots_index || "index",
+      robots_follow: req.body.robots_follow || "follow",
       status: req.body.status || "Active",
       created_by: req.userId,
     };
@@ -409,6 +415,16 @@ export const updateSeo = async (req, res) => {
           ? req.body.banner_alt
           : seo.banner_alt,
       open_graph: openGraphImageUrl,
+      og_title:
+        req.body.og_title !== undefined ? req.body.og_title : seo.og_title,
+      og_description:
+        req.body.og_description !== undefined
+          ? req.body.og_description
+          : seo.og_description,
+      twitter_card:
+        req.body.twitter_card !== undefined
+          ? req.body.twitter_card
+          : seo.twitter_card,
       openGraphTags:
         req.body.openGraphTags !== undefined
           ? req.body.openGraphTags
@@ -417,6 +433,18 @@ export const updateSeo = async (req, res) => {
         req.body.schemaMarkup !== undefined
           ? req.body.schemaMarkup
           : seo.schemaMarkup,
+      canonical_url:
+        req.body.canonical_url !== undefined
+          ? req.body.canonical_url
+          : seo.canonical_url,
+      robots_index:
+        req.body.robots_index !== undefined
+          ? req.body.robots_index
+          : seo.robots_index,
+      robots_follow:
+        req.body.robots_follow !== undefined
+          ? req.body.robots_follow
+          : seo.robots_follow,
       status: req.body.status || seo.status,
       updated_by: req.userId,
     };
